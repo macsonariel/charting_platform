@@ -77,8 +77,13 @@ Create `github-actions-ecs-role` with a trust policy restricted to this
 repository and production environment:
 
 ```text
-repo:macsonariel/charting_platform:environment:production
+repo:macsonariel@197732366/charting_platform@1337692726:environment:production
 ```
+
+The immutable owner and repository IDs are used because this repository was
+created after GitHub introduced immutable OIDC subjects for new repositories.
+Also restrict the role to the `main` ref and the `production` environment, and
+configure that GitHub environment to accept deployments from `main` only.
 
 Its permissions should be limited to pushing images to the one ECR repository,
 creating or updating the intended ECS Express service, describing deployments,
@@ -91,7 +96,9 @@ replace wildcard resources wherever the AWS API supports tighter scoping.
 Create a GitHub environment named `production`. Add protection or required
 reviewers when another trusted collaborator is available.
 
-Add these repository or environment variables:
+Add `AWS_DEPLOYMENT_ENABLED` as a repository variable because GitHub evaluates
+the deployment job condition before environment-level variables are available.
+Add the remaining values as `production` environment variables:
 
 | Variable | Initial value |
 | --- | --- |
