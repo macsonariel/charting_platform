@@ -37,6 +37,30 @@ jobs:
       - name: Run automated tests
         run: python -m unittest discover -s tests -p "test_*.py" -v
 
+      - name: Build and health-check production container
+        shell: bash
+        run: |
+          image="charting-platform-ci:${GITHUB_SHA}"
+          container="charting-platform-ci-${GITHUB_RUN_ID}"
+          docker build --tag "$image" .
+          docker run --detach --name "$container" --publish 127.0.0.1:8081:8080 "$image"
+
+          cleanup() {
+            docker logs "$container" || true
+            docker rm --force "$container" || true
+          }
+          trap cleanup EXIT
+
+          for attempt in {1..30}; do
+            if curl --fail --silent --show-error http://127.0.0.1:8081/api/health > /tmp/container-health.json; then
+              python -c "import json; payload=json.load(open('/tmp/container-health.json', encoding='utf-8')); assert payload.get('status') == 'healthy', payload"
+              exit 0
+            fi
+            sleep 1
+          done
+
+          exit 1
+
       - name: Smoke-test application
         shell: bash
         run: |

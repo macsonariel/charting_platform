@@ -1,0 +1,119 @@
+name: Deploy to ECS Express Mode
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-ecs-express
+  cancel-in-progress: false
+
+jobs:
+  deployment-disabled:
+    name: Deployment prerequisites
+    if: ${{ vars.AWS_DEPLOYMENT_ENABLED != 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Explain how to enable deployment
+        run: |
+          echo "Deployment is disabled."
+          echo "Complete docs/AWS_ECS_EXPRESS.md and set AWS_DEPLOYMENT_ENABLED=true."
+
+  deploy:
+    name: Deploy production
+    if: ${{ vars.AWS_DEPLOYMENT_ENABLED == 'true' }}
+    runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Validate required configuration
+        env:
+          AWS_ACCOUNT_ID: ${{ vars.AWS_ACCOUNT_ID }}
+          AWS_DEPLOYMENT_ROLE: ${{ vars.AWS_DEPLOYMENT_ROLE }}
+          AWS_REGION: ${{ vars.AWS_REGION }}
+          ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY }}
+          ECS_CLUSTER: ${{ vars.ECS_CLUSTER }}
+          ECS_EXECUTION_ROLE: ${{ vars.ECS_EXECUTION_ROLE }}
+          ECS_INFRASTRUCTURE_ROLE: ${{ vars.ECS_INFRASTRUCTURE_ROLE }}
+          ECS_SERVICE: ${{ vars.ECS_SERVICE }}
+        shell: bash
+        run: |
+          required=(AWS_ACCOUNT_ID AWS_DEPLOYMENT_ROLE AWS_REGION ECR_REPOSITORY ECS_CLUSTER ECS_EXECUTION_ROLE ECS_INFRASTRUCTURE_ROLE ECS_SERVICE)
+          for name in "${required[@]}"; do
+            if [ -z "${!name}" ]; then
+              echo "Missing required GitHub variable: $name" >&2
+              exit 1
+            fi
+          done
+
+      - name: Configure short-lived AWS credentials
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+          role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/${{ vars.AWS_DEPLOYMENT_ROLE }}
+          role-session-name: GitHubActionsECSExpressDeployment
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Log in to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and push immutable image
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY }}
+          IMAGE_TAG: ${{ github.sha }}
+        shell: bash
+        run: |
+          image="$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+          docker build --tag "$image" .
+          docker push "$image"
+          echo "image=$image" >> "$GITHUB_OUTPUT"
+
+      - name: Deploy to ECS Express Mode
+        id: deploy
+        uses: aws-actions/amazon-ecs-deploy-express-service@v1
+        with:
+          service-name: ${{ vars.ECS_SERVICE }}
+          cluster: ${{ vars.ECS_CLUSTER }}
+          image: ${{ steps.build-image.outputs.image }}
+          execution-role-arn: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/${{ vars.ECS_EXECUTION_ROLE }}
+          infrastructure-role-arn: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/${{ vars.ECS_INFRASTRUCTURE_ROLE }}
+          container-port: 8080
+          environment-variables: |
+            [
+              {"name":"APP_ENV","value":"production"},
+              {"name":"DATA_SOURCE","value":"binance"}
+            ]
+          cpu: '1024'
+          memory: '2048'
+          health-check-path: /api/health
+          min-task-count: 1
+          max-task-count: 2
+          auto-scaling-metric: AVERAGE_CPU
+          auto-scaling-target-value: 70
+          tags: |
+            Environment=Production
+            Project=ChartingPlatform
+
+      - name: Publish deployment summary
+        env:
+          ENDPOINT: ${{ steps.deploy.outputs.endpoint }}
+          IMAGE: ${{ steps.build-image.outputs.image }}
+        shell: bash
+        run: |
+          {
+            echo "## ECS Express deployment"
+            echo
+            echo "- Image: \`$IMAGE\`"
+            echo "- Endpoint: $ENDPOINT"
+            echo "- Health: $ENDPOINT/api/health"
+          } >> "$GITHUB_STEP_SUMMARY"

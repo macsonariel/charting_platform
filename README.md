@@ -95,13 +95,17 @@ Health: /api/health
 
 Use a platform-provided `PORT` value in the actual start command. The process needs outbound HTTPS access for market-data APIs and browser clients need access to the external D3 CDN used by the current frontend.
 
-An AWS App Runner configuration is included for the current single-service
-architecture. See [the AWS App Runner deployment guide](docs/AWS_APP_RUNNER.md)
-for setup, verification, production limitations, and rollback guidance. The
-configuration prepares the application for deployment but does not create AWS
-resources.
+An AWS ECS Express Mode container and disabled-by-default deployment workflow
+are included for the current single-service architecture. See
+[the AWS ECS Express deployment guide](docs/AWS_ECS_EXPRESS.md) for AWS and
+GitHub prerequisites, OIDC authentication, verification, production limitations,
+and rollback guidance. The repository configuration does not create AWS resources
+until an operator explicitly enables and manually dispatches deployment.
 
-There is deliberately no automatic deployment workflow in this repository. `.github/workflows/ci.yml` validates pushes and pull requests, but a deploy job should be added only after a hosting provider, environment, secrets, and rollback policy have been chosen.
+The deployment workflow is manual and disabled by default. It becomes operational
+only after the AWS prerequisites are complete and the repository variable
+`AWS_DEPLOYMENT_ENABLED` is explicitly set to `true`. Automatic deployment on
+push is intentionally not configured.
 
 GitHub Pages, object storage, and other static-only hosts are unsupported: they cannot execute the FastAPI application, and publishing the repository would also expose source files that are not intended to be public web assets.
 
@@ -110,8 +114,8 @@ GitHub Pages, object storage, and other static-only hosts are unsupported: they 
 The current code still needs production hardening:
 
 - Choose and implement an authentication and server-side user-storage model before exposing private or multi-user data.
-- Replace the wildcard CORS policy with explicit trusted origins.
-- Remove or configure frontend API URLs that currently default to `localhost`/`127.0.0.1`.
+- Keep production CORS disabled for the same-origin UI, or configure exact trusted origins if a separate frontend is introduced.
+- Ensure any future frontend API configuration uses the deployed same-origin routes rather than a local development address.
 - Pin and audit dependencies, add automated tests, and define logging, monitoring, backups, and rollback behavior.
 - Confirm the external data providers' terms, rate limits, and availability for the intended use.
 
