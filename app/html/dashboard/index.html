@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - TradingBuddy</title>
+    <!-- Global Theme Variables (must be first) -->
+    <link rel="stylesheet" href="../../css/theme.css">
+    <link rel="stylesheet" href="../../css/dashboard/user_sidebar_styles.css?v=3.1">
+    <link rel="stylesheet" href="../../css/dashboard/dashboard_styles.css">
+    <!-- Analysis Panel Styles -->
+    <link rel="stylesheet" href="../../css/analysis-panel/analysis-panel-v2.css?v=2.2">
+    <link rel="stylesheet" href="../../css/dashboard/dashboard-layout.css">
+</head>
+
+<body>
+    <button class="mobile-menu-toggle" id="mobileMenuToggle" type="button" aria-label="Open navigation"
+        aria-controls="sidebar" aria-expanded="false">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round">
+            <path d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+    </button>
+
+    <button class="mobile-analysis-toggle" id="mobileAnalysisToggle" type="button" aria-label="Open market analysis"
+        aria-controls="analysisPanel" aria-expanded="false" hidden>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4 19V9" />
+            <path d="M10 19V5" />
+            <path d="M16 19v-7" />
+            <path d="M22 19V3" />
+        </svg>
+    </button>
+    <div class="analysis-panel-overlay" id="analysisPanelOverlay"></div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-content">
+                <!-- Toggle Button -->
+                <button class="sidebar-toggle-btn" id="sidebarToggle" title="Toggle sidebar">
+                    <svg class="toggle-icon-expand" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                    <svg class="toggle-icon-collapse" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                </button>
+                <ul class="sidebar-menu">
+                    <!-- Home -->
+                    <li class="menu-item">
+                        <a href="#" class="menu-link" data-route="home" aria-label="Home" title="Home">
+                            <svg class="menu-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                                <polyline points="9 22 9 12 15 12 15 22" />
+                            </svg>
+                            <span class="menu-text">Home</span>
+                        </a>
+                    </li>
+
+                    <!-- Settings -->
+                    <li class="menu-item">
+                        <a href="#" class="menu-link" data-route="settings" aria-label="Settings" title="Settings">
+                            <svg class="menu-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                                <line x1="4" y1="6" x2="20" y2="6" />
+                                <circle cx="9" cy="6" r="2" />
+                                <line x1="4" y1="18" x2="20" y2="18" />
+                                <circle cx="15" cy="18" r="2" />
+                            </svg>
+                            <span class="menu-text">Settings</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content-wrapper">
+            <div id="main-content" class="main-content"></div>
+        </main>
+
+        <!-- Analysis Panel (Right Sidebar) - V2 Redesign -->
+        <aside class="ap-panel" id="analysisPanel">
+
+            <!-- 1. HEADER: Engine Selector + Gauge -->
+            <header class="ap-header">
+                <div class="ap-engine-select">
+                    <div class="ap-engine-dropdown" id="apEngineIdentity">
+                        <span class="ap-engine-icon">◈</span>
+                        <span class="ap-engine-name" id="apEngineName">Core Engine</span>
+                    </div>
+                    <span class="ap-data-status loading" id="apDataStatus" role="status">Loading analysis…</span>
+                </div>
+
+                <div class="ap-gauge-wrap">
+                    <div class="ap-speedometer">
+                        <svg class="ap-speedometer-svg" viewBox="0 0 200 120">
+                            <!-- Gradient definitions -->
+                            <defs>
+                                <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" style="stop-color:#ef4444" />
+                                    <stop offset="50%" style="stop-color:#94a3b8" />
+                                    <stop offset="100%" style="stop-color:#22c55e" />
+                                </linearGradient>
+                            </defs>
+
+                            <!-- Background arc -->
+                            <path class="ap-speedo-bg" d="M 20 100 A 80 80 0 0 1 180 100" fill="none"
+                                stroke="rgba(255,255,255,0.08)" stroke-width="16" stroke-linecap="round" />
+
+                            <!-- Gradient arc (the main gauge) -->
+                            <path class="ap-speedo-arc" d="M 20 100 A 80 80 0 0 1 180 100" fill="none"
+                                stroke="url(#gaugeGradient)" stroke-width="16" stroke-linecap="round" />
+
+                            <!-- Center point marker -->
+                            <circle cx="100" cy="100" r="4" fill="rgba(255,255,255,0.3)" />
+
+                            <!-- Tick marks -->
+                            <line x1="20" y1="100" x2="28" y2="100" stroke="rgba(255,255,255,0.4)" stroke-width="2" />
+                            <line x1="100" y1="20" x2="100" y2="28" stroke="rgba(255,255,255,0.4)" stroke-width="2" />
+                            <line x1="180" y1="100" x2="172" y2="100" stroke="rgba(255,255,255,0.4)" stroke-width="2" />
+
+                            <!-- Needle -->
+                            <g class="ap-needle-group" id="apNeedleGroup"
+                                style="transform-origin: 100px 100px; transform: rotate(0deg);">
+                                <path class="ap-needle" d="M 100 100 L 96 95 L 100 30 L 104 95 Z" fill="#ffffff" />
+                                <circle cx="100" cy="100" r="8" fill="#18181b" stroke="#ffffff" stroke-width="2" />
+                            </g>
+
+                            <!-- Labels -->
+                            <text x="30" y="115" class="ap-speedo-label bearish">BEAR</text>
+                            <text x="100" y="10" class="ap-speedo-label neutral" text-anchor="middle">0%</text>
+                            <text x="170" y="115" class="ap-speedo-label bullish" text-anchor="end">BULL</text>
+                        </svg>
+
+                        <!-- Bias indicator below gauge -->
+                        <div class="ap-bias-display">
+                            <span class="ap-bias-value neutral" id="apBiasValue">—</span>
+                            <span class="ap-bias-label neutral" id="apBiasLabel">Loading</span>
+                        </div>
+                    </div>
+                </div>
+
+            </header>
+
+            <!-- 2. THESIS BOX -->
+            <div class="ap-thesis" id="apThesis">
+                <span class="ap-thesis-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 18h6" />
+                        <path d="M10 22h4" />
+                        <path d="M8.7 14.5A7 7 0 1 1 15.3 14.5C14.5 15.1 14 16 14 17h-4c0-1-.5-1.9-1.3-2.5Z" />
+                    </svg>
+                </span>
+                <p class="ap-thesis-text" id="apThesisText">Loading Core analysis…</p>
+            </div>
+
+            <!-- 3. RECENT EVENTS STRIP -->
+            <div class="ap-events" id="apEvents">
+                <span class="ap-events-label">Recent:</span>
+                <span class="ap-event-chip neutral">Loading…</span>
+            </div>
+
+            <!-- 4. SESSION CONTEXT: wired to a real session source in the next implementation pass -->
+            <section class="ap-session-context" id="apSessionContext" data-session-source="unconnected"
+                aria-labelledby="apSessionTitle">
+                <div class="ap-session-header">
+                    <div class="ap-session-heading">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <circle cx="12" cy="12" r="9" />
+                            <path d="M12 7v5l3 2" />
+                        </svg>
+                        <span id="apSessionTitle">Session Context</span>
+                    </div>
+                    <span class="ap-session-source" id="apSessionStatus">Awaiting source</span>
+                </div>
+                <div class="ap-session-grid">
+                    <div class="ap-session-item">
+                        <span class="ap-session-label">Active session</span>
+                        <strong class="ap-session-value" id="apActiveSession">—</strong>
+                    </div>
+                    <div class="ap-session-item">
+                        <span class="ap-session-label">Killzone</span>
+                        <strong class="ap-session-value" id="apActiveKillzone">—</strong>
+                    </div>
+                    <div class="ap-session-item">
+                        <span class="ap-session-label">Next change</span>
+                        <strong class="ap-session-value" id="apNextSessionChange">—</strong>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. TABBED CONTENT -->
+            <div class="ap-tabs">
+                <nav class="ap-tab-nav">
+                    <button class="ap-tab-btn active" data-tab="context">Context</button>
+                    <button class="ap-tab-btn" data-tab="levels">Levels</button>
+                    <button class="ap-tab-btn" data-tab="signals">Signals</button>
+                </nav>
+
+                <div class="ap-tab-content">
+                    <!-- Context Tab -->
+                    <div class="ap-tab-pane active" data-pane="context">
+                        <div class="ap-section">
+                            <div class="ap-section-header">
+                                <span class="ap-section-title">Structure</span>
+                                <span class="ap-section-hint">What is the market structure?</span>
+                            </div>
+                            <div class="ap-section-body">
+                                <div class="ap-row">
+                                    <span class="ap-label">Direction</span>
+                                    <span class="ap-badge neutral" id="apDirection">—</span>
+                                </div>
+                                <div class="ap-row">
+                                    <span class="ap-label">State</span>
+                                    <span class="ap-value" id="apState">—</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="ap-section">
+                            <div class="ap-section-header">
+                                <span class="ap-section-title">Range Position</span>
+                                <span class="ap-section-hint">Where is price within the range?</span>
+                            </div>
+                            <div class="ap-section-body">
+                                <div class="ap-range-bar">
+                                    <div class="ap-range-zone discount"></div>
+                                    <div class="ap-range-zone equilibrium"></div>
+                                    <div class="ap-range-zone premium"></div>
+                                    <div class="ap-range-marker">
+                                        <div class="ap-range-indicator" id="apRangeIndicator" style="left: 50%;"></div>
+                                    </div>
+                                </div>
+                                <div class="ap-range-labels">
+                                    <span class="discount-label">Discount</span>
+                                    <span class="equilibrium-label">EQ</span>
+                                    <span class="premium-label">Premium</span>
+                                </div>
+                                <div class="ap-row" style="margin-top: 16px;">
+                                    <span class="ap-label">Current Zone</span>
+                                    <span class="ap-badge neutral" id="apZone">—</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="ap-section">
+                            <div class="ap-section-header">
+                                <span class="ap-section-title">MTF Confluence</span>
+                                <span class="ap-section-hint">Are timeframes aligned?</span>
+                            </div>
+                            <div class="ap-section-body">
+                                <div class="ap-mtf-row">
+                                    <div class="ap-mtf-dots" id="apMtfDots">
+                                        <div class="ap-mtf-dot unknown" data-tf="5m">
+                                            <span class="ap-mtf-indicator"></span>
+                                            <span class="ap-mtf-label">5M</span>
+                                        </div>
+                                        <div class="ap-mtf-dot unknown" data-tf="15m">
+                                            <span class="ap-mtf-indicator"></span>
+                                            <span class="ap-mtf-label">15M</span>
+                                        </div>
+                                        <div class="ap-mtf-dot unknown" data-tf="1h">
+                                            <span class="ap-mtf-indicator"></span>
+                                            <span class="ap-mtf-label">1H</span>
+                                        </div>
+                                        <div class="ap-mtf-dot unknown" data-tf="4h">
+                                            <span class="ap-mtf-indicator"></span>
+                                            <span class="ap-mtf-label">4H</span>
+                                        </div>
+                                        <div class="ap-mtf-dot unknown" data-tf="1d">
+                                            <span class="ap-mtf-indicator"></span>
+                                            <span class="ap-mtf-label">D</span>
+                                        </div>
+                                    </div>
+                                    <div class="ap-mtf-alignment">
+                                        <span class="ap-mtf-percent" id="apMtfPercent">—</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Levels Tab -->
+                    <div class="ap-tab-pane" data-pane="levels">
+                        <div class="ap-section">
+                            <div class="ap-section-header">
+                                <span class="ap-section-title">Protected Levels</span>
+                            </div>
+                            <div class="ap-section-body">
+                                <div class="ap-level">
+                                    <span class="ap-level-icon high">▲</span>
+                                    <span class="ap-level-price high" id="apProtectedHigh">—</span>
+                                    <span class="ap-level-label">protected high</span>
+                                    <button class="ap-level-alert" title="Set alert">🔔</button>
+                                </div>
+                                <div class="ap-level">
+                                    <span class="ap-level-icon low">▼</span>
+                                    <span class="ap-level-price low" id="apProtectedLow">—</span>
+                                    <span class="ap-level-label">protected low</span>
+                                    <button class="ap-level-alert" title="Set alert">🔔</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="ap-section">
+                            <div class="ap-section-header">
+                                <span class="ap-section-title">Liquidity</span>
+                            </div>
+                            <div class="ap-section-body">
+                                <div class="ap-row">
+                                    <span class="ap-label">Above</span>
+                                    <span class="ap-value" id="apLiqAbove">—</span>
+                                </div>
+                                <div class="ap-row">
+                                    <span class="ap-label">Below</span>
+                                    <span class="ap-value" id="apLiqBelow">—</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="ap-section">
+                            <div class="ap-section-header">
+                                <span class="ap-section-title">Invalidation</span>
+                            </div>
+                            <div class="ap-section-body">
+                                <div class="ap-row">
+                                    <span class="ap-label">Break Price</span>
+                                    <span class="ap-value" id="apInvPrice" style="color: #eab308;">—</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="ap-section">
+                            <div class="ap-section-header">
+                                <span class="ap-section-title">Fair Value Gaps</span>
+                            </div>
+                            <div class="ap-section-body" id="apFVGs">
+                                <div class="no-data">No FVGs detected</div>
+                            </div>
+                        </div>
+
+                        <div class="ap-section">
+                            <div class="ap-section-header">
+                                <span class="ap-section-title">Support Zones</span>
+                            </div>
+                            <div class="ap-section-body" id="apSupportZones">
+                                <div class="no-data">No support zones detected</div>
+                            </div>
+                        </div>
+
+                        <div class="ap-section">
+                            <div class="ap-section-header">
+                                <span class="ap-section-title">Resistance Zones</span>
+                            </div>
+                            <div class="ap-section-body" id="apResistanceZones">
+                                <div class="no-data">No resistance zones detected</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Signals Tab -->
+                    <div class="ap-tab-pane" data-pane="signals">
+                        <div class="ap-section">
+                            <div class="ap-section-header">
+                                <span class="ap-section-title">Directional Bias</span>
+                            </div>
+                            <div class="ap-section-body">
+                                <div class="ap-row">
+                                    <span class="ap-label">Bias</span>
+                                    <span class="ap-badge neutral" id="apBias">—</span>
+                                </div>
+                                <div class="ap-row">
+                                    <span class="ap-label">Reasoning</span>
+                                    <span class="ap-value" id="apBiasReason">—</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="ap-section">
+                            <div class="ap-section-header">
+                                <span class="ap-section-title">Scenarios</span>
+                            </div>
+                            <div class="ap-section-body">
+                                <div class="ap-row">
+                                    <span class="ap-label">🟢 Bullish</span>
+                                    <span class="ap-value" id="apBullScenario">—</span>
+                                </div>
+                                <div class="ap-row">
+                                    <span class="ap-label">🔴 Bearish</span>
+                                    <span class="ap-value" id="apBearScenario">—</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. FOOTER -->
+            <footer class="ap-footer">
+                <div class="ap-price" id="apCurrentPrice">—</div>
+                <div class="ap-invalidation">
+                    <span class="ap-inv-label">Key Inv:</span>
+                    <span class="ap-inv-price" id="apFooterInv">—</span>
+                </div>
+            </footer>
+        </aside>
+    </div>
+
+    <!-- Analysis Panel Scripts -->
+    <script src="../../js/analysis-panel/analysis-panel-v2.js?v=2.1"></script>
+    <script src="../../js/analysis-panel/panel-controller.js?v=3.2"></script>
+
+    <!-- Alert System -->
+    <script src="../../js/alerts/toast.js"></script>
+    <script src="../../js/alerts/alert-config.js"></script>
+    <script src="../../js/alerts/alert-system.js"></script>
+
+    <script src="../../js/dashboard/app.js?v=2.5"></script>
+    <script src="../../js/dashboard/user_sidebar_script.js?v=3.1"></script>
+</body>
+
+</html>

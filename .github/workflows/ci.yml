@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate FastAPI application
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-dev.txt
+          python -m pip check
+
+      - name: Compile backend
+        run: python -m compileall -q backend
+
+      - name: Run automated tests
+        run: python -m unittest discover -s tests -p "test_*.py" -v
+
+      - name: Smoke-test application
+        shell: bash
+        run: |
+          python -m uvicorn backend.main:app --host 127.0.0.1 --port 8000 > /tmp/tradingbuddy-uvicorn.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+
+          for attempt in {1..20}; do
+            if curl --fail --silent --show-error http://127.0.0.1:8000/api/health > /tmp/tradingbuddy-health.json; then
+              python -c "import json; payload=json.load(open('/tmp/tradingbuddy-health.json', encoding='utf-8')); assert payload.get('status') == 'healthy', payload"
+              exit 0
+            fi
+            sleep 1
+          done
+
+          cat /tmp/tradingbuddy-uvicorn.log
+          exit 1

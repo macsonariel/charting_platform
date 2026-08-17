@@ -1,0 +1,1451 @@
+/**
+ * Analysis Panel V2 - Complete Redesign
+ * 
+ * Fresh class naming scheme: ap-* (analysis panel)
+ * Uses CSS Grid for responsive layout
+ * Matches design mockup with thesis box, tabs, events strip
+ * 
+ * NOTE: Theme variables are centralized in /app/css/theme.css
+ */
+
+/* ============================================
+   PANEL CONTAINER
+   ============================================ */
+.ap-panel {
+    display: grid;
+    grid-template-rows: auto auto auto 1fr auto;
+    height: 100%;
+    width: 320px;
+    max-width: 320px;
+    min-width: 280px;
+    background: var(--ap-bg);
+    border-left: 1px solid var(--ap-border);
+    overflow: hidden;
+    font-family: 'Inter', -apple-system, sans-serif;
+}
+
+/* ============================================
+   1. HEADER (Engine Selector + Gauge)
+   ============================================ */
+.ap-header {
+    padding: 20px 16px;
+    background: transparent;
+    border-bottom: none;
+    text-align: center;
+}
+
+.ap-engine-select {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.ap-engine-dropdown {
+    padding: 6px 12px;
+    background: transparent;
+    border: none;
+    border-radius: var(--ap-radius-sm);
+    color: var(--ap-text-secondary);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: default;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+}
+
+.ap-data-status {
+    font-size: 10px;
+    line-height: 1.4;
+    color: var(--ap-text-muted);
+}
+
+.ap-data-status.ready {
+    color: var(--ap-bullish);
+}
+
+.ap-data-status.error {
+    color: var(--ap-bearish);
+}
+
+.ap-data-status.stale {
+    color: var(--ap-warning);
+}
+
+.ap-engine-dropdown:hover {
+    color: var(--ap-accent);
+}
+
+/* Hide icon, show only name */
+.ap-engine-icon {
+    display: none;
+}
+
+.ap-engine-name {
+    font-weight: 500;
+    letter-spacing: 0.3px;
+}
+
+.ap-engine-arrow {
+    font-size: 8px;
+    opacity: 0.4;
+    margin-left: 2px;
+}
+
+/* Speedometer Gauge Container */
+.ap-gauge-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 8px 0;
+    margin: 0 auto;
+}
+
+.ap-speedometer {
+    position: relative;
+    width: 100%;
+    max-width: 240px;
+}
+
+.ap-speedometer-svg {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Arc styles */
+.ap-speedo-bg {
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.ap-speedo-arc {
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.1));
+}
+
+/* Needle animation */
+.ap-needle-group {
+    transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.ap-needle {
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
+}
+
+/* Labels on the gauge */
+.ap-speedo-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    fill: var(--ap-text-muted);
+}
+
+.ap-speedo-label.bearish {
+    fill: #ef4444;
+}
+
+.ap-speedo-label.bullish {
+    fill: #22c55e;
+}
+
+.ap-speedo-label.neutral {
+    fill: var(--ap-text-muted);
+}
+
+/* Bias display below gauge */
+.ap-bias-display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    margin-top: 4px;
+    padding: 8px 20px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: var(--ap-radius-sm);
+}
+
+.ap-bias-value {
+    font-size: 24px;
+    font-weight: 800;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    line-height: 1;
+    transition: color 0.3s ease;
+}
+
+.ap-bias-value.bullish {
+    color: var(--ap-bullish);
+}
+
+.ap-bias-value.bearish {
+    color: var(--ap-bearish);
+}
+
+.ap-bias-value.neutral {
+    color: var(--ap-neutral);
+}
+
+.ap-bias-label {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: color 0.3s ease;
+}
+
+.ap-bias-label.bullish {
+    color: var(--ap-bullish);
+}
+
+.ap-bias-label.bearish {
+    color: var(--ap-bearish);
+}
+
+.ap-bias-label.neutral {
+    color: var(--ap-neutral);
+}
+
+/* ============================================
+   2. THESIS BOX
+   ============================================ */
+.ap-thesis {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+    margin: 0 12px 12px;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.05));
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: var(--ap-radius);
+}
+
+.ap-thesis-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.ap-thesis-text {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--ap-text-primary);
+}
+
+.ap-thesis-text strong {
+    color: var(--ap-accent);
+}
+
+/* ============================================
+   3. RECENT EVENTS STRIP
+   ============================================ */
+.ap-events {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    margin: 0 12px 12px;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.ap-events::-webkit-scrollbar {
+    display: none;
+}
+
+.ap-events-label {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--ap-text-muted);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.ap-event-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.ap-event-chip:hover {
+    transform: translateY(-1px);
+}
+
+.ap-event-chip.bullish {
+    background: rgba(34, 197, 94, 0.15);
+    color: var(--ap-bullish);
+    border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.ap-event-chip.bearish {
+    background: rgba(239, 68, 68, 0.15);
+    color: var(--ap-bearish);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.ap-event-chip.neutral {
+    background: rgba(148, 163, 184, 0.15);
+    color: var(--ap-neutral);
+    border: 1px solid rgba(148, 163, 184, 0.3);
+}
+
+.ap-event-time {
+    font-size: 9px;
+    opacity: 0.7;
+}
+
+/* ============================================
+   4. TABBED CONTENT
+   ============================================ */
+.ap-tabs {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    margin: 0 12px;
+    flex: 1;
+}
+
+.ap-tab-nav {
+    display: flex;
+    gap: 4px;
+    padding: 4px;
+    background: var(--ap-bg-section);
+    border-radius: var(--ap-radius-sm);
+    margin-bottom: 12px;
+}
+
+.ap-tab-btn {
+    flex: 1;
+    padding: 10px 16px;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    color: var(--ap-text-secondary);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.ap-tab-btn:hover {
+    color: var(--ap-text-primary);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.ap-tab-btn.active {
+    background: var(--ap-accent);
+    color: white;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+.ap-tab-content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+.ap-tab-content::-webkit-scrollbar {
+    width: 4px;
+}
+
+.ap-tab-content::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+}
+
+.ap-tab-pane {
+    display: none;
+}
+
+.ap-tab-pane.active {
+    display: block;
+}
+
+/* ============================================
+   TAB CONTENT SECTIONS
+   ============================================ */
+.ap-section {
+    background: var(--ap-bg-card);
+    border-radius: var(--ap-radius);
+    margin-bottom: 10px;
+    overflow: hidden;
+}
+
+.ap-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--ap-border);
+}
+
+.ap-section-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--ap-text-primary);
+}
+
+.ap-section-hint {
+    font-size: 10px;
+    color: var(--ap-text-muted);
+    font-style: italic;
+}
+
+.ap-section-body {
+    padding: 16px;
+}
+
+/* Data Rows */
+.ap-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.ap-row:last-child {
+    border-bottom: none;
+}
+
+.ap-label {
+    font-size: 12px;
+    color: var(--ap-text-secondary);
+}
+
+.ap-value {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ap-text-primary);
+}
+
+/* Badges */
+.ap-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.ap-badge.bullish {
+    background: rgba(34, 197, 94, 0.15);
+    color: var(--ap-bullish);
+}
+
+.ap-badge.bearish {
+    background: rgba(239, 68, 68, 0.15);
+    color: var(--ap-bearish);
+}
+
+.ap-badge.neutral {
+    background: rgba(148, 163, 184, 0.15);
+    color: var(--ap-neutral);
+}
+
+/* Compact Chips (for FVG/S&R zones) */
+.ap-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.ap-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 16px;
+    font-size: 11px;
+    font-weight: 600;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    cursor: default;
+    transition: transform 0.2s;
+}
+
+.ap-chip:hover {
+    transform: scale(1.02);
+}
+
+.ap-chip.bullish {
+    background: rgba(34, 197, 94, 0.15);
+    color: var(--ap-bullish);
+    border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.ap-chip.bearish {
+    background: rgba(239, 68, 68, 0.15);
+    color: var(--ap-bearish);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.ap-chip.neutral {
+    background: rgba(148, 163, 184, 0.15);
+    color: var(--ap-neutral);
+    border: 1px solid rgba(148, 163, 184, 0.3);
+}
+
+.ap-muted {
+    font-size: 11px;
+    color: var(--ap-text-muted);
+    font-style: italic;
+}
+
+/* Level Rows */
+.ap-level {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+}
+
+.ap-level-icon {
+    font-size: 12px;
+}
+
+.ap-level-icon.high {
+    color: var(--ap-bullish);
+}
+
+.ap-level-icon.low {
+    color: var(--ap-bearish);
+}
+
+.ap-level-price {
+    font-size: 14px;
+    font-weight: 600;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+.ap-level-price.high {
+    color: var(--ap-bullish);
+}
+
+.ap-level-price.low {
+    color: var(--ap-bearish);
+}
+
+.ap-level-label {
+    font-size: 10px;
+    color: var(--ap-text-muted);
+    margin-left: auto;
+}
+
+.ap-level-alert {
+    padding: 4px 8px;
+    background: transparent;
+    border: 1px solid var(--ap-border);
+    border-radius: 4px;
+    color: var(--ap-text-secondary);
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.2s;
+}
+
+.ap-level-alert:hover {
+    background: var(--ap-accent);
+    border-color: var(--ap-accent);
+    color: white;
+}
+
+/* MTF Dots - Full Width */
+.ap-mtf-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 8px 0;
+}
+
+.ap-mtf-dots {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    gap: 0;
+}
+
+.ap-mtf-dot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    flex: 1;
+}
+
+.ap-mtf-indicator {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    transition: all 0.3s;
+}
+
+.ap-mtf-dot.bullish .ap-mtf-indicator {
+    background: var(--ap-bullish);
+    box-shadow: 0 0 10px rgba(34, 197, 94, 0.6);
+}
+
+.ap-mtf-dot.bearish .ap-mtf-indicator {
+    background: var(--ap-bearish);
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.6);
+}
+
+.ap-mtf-dot.neutral .ap-mtf-indicator,
+.ap-mtf-dot.unknown .ap-mtf-indicator,
+.ap-mtf-dot.error .ap-mtf-indicator {
+    background: rgba(148, 163, 184, 0.35);
+    box-shadow: none;
+}
+
+.ap-mtf-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--ap-text-secondary);
+    text-transform: uppercase;
+}
+
+/* Hide alignment section */
+.ap-mtf-alignment {
+    display: none;
+}
+
+.ap-mtf-percent {
+    display: none;
+}
+
+/* Range Bar with Labels - Brighter Colors */
+.ap-range-bar {
+    display: flex;
+    height: 14px;
+    border-radius: 7px;
+    overflow: hidden;
+    margin: 12px 0 0;
+    position: relative;
+}
+
+.ap-range-zone {
+    flex: 1;
+}
+
+.ap-range-zone.premium {
+    background: rgba(239, 68, 68, 0.7);
+}
+
+.ap-range-zone.equilibrium {
+    background: rgba(234, 179, 8, 0.7);
+}
+
+.ap-range-zone.discount {
+    background: rgba(34, 197, 94, 0.7);
+}
+
+/* Range labels below bar */
+.ap-range-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--ap-text-muted);
+    margin-top: 6px;
+    margin-bottom: 8px;
+}
+
+.ap-range-labels .premium-label {
+    color: var(--ap-bearish);
+}
+
+.ap-range-labels .equilibrium-label {
+    color: var(--ap-warning);
+}
+
+.ap-range-labels .discount-label {
+    color: var(--ap-bullish);
+}
+
+/* Remove separate marker - indicator goes inside bar */
+.ap-range-marker {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 14px;
+    pointer-events: none;
+}
+
+.ap-range-indicator {
+    position: absolute;
+    width: 6px;
+    height: 14px;
+    background: white;
+    border-radius: 3px;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+    transition: left 0.3s ease;
+    top: 0;
+}
+
+/* ============================================
+   5. FOOTER
+   ============================================ */
+.ap-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: var(--ap-bg-section);
+    border-top: 1px solid var(--ap-border);
+}
+
+.ap-price {
+    font-size: 20px;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    color: var(--ap-text-primary);
+}
+
+.ap-invalidation {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ap-inv-label {
+    font-size: 10px;
+    color: var(--ap-text-muted);
+    text-transform: uppercase;
+}
+
+.ap-inv-price {
+    font-size: 14px;
+    font-weight: 600;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    color: var(--ap-warning);
+}
+
+.ap-clear-btn {
+    padding: 6px 10px;
+    background: transparent;
+    border: 1px solid var(--ap-border);
+    border-radius: 4px;
+    color: var(--ap-text-secondary);
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.ap-clear-btn:hover {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: var(--ap-bearish);
+    color: var(--ap-bearish);
+}
+
+/* ============================================
+   QUICK STRIP (BOTTOM BAR) - Enhanced
+   ============================================ */
+.qs-strip {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    height: 60px;
+    padding: 0 20px;
+    background: transparent;
+    border: none;
+}
+
+.qs-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 20px;
+    height: 100%;
+}
+
+.qs-divider {
+    width: 1px;
+    height: 32px;
+    background: var(--ap-border);
+}
+
+.qs-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.qs-badge.bullish {
+    background: var(--ap-bullish);
+    color: white;
+}
+
+.qs-badge.bearish {
+    background: var(--ap-bearish);
+    color: white;
+}
+
+.qs-badge.neutral {
+    background: rgba(148, 163, 184, 0.2);
+    color: var(--ap-neutral);
+}
+
+.qs-label {
+    font-size: 11px;
+    color: var(--ap-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.qs-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ap-text-primary);
+}
+
+.qs-value.warning {
+    color: var(--ap-warning);
+}
+
+.qs-value.bullish {
+    color: var(--ap-bullish);
+}
+
+.qs-value.bearish {
+    color: var(--ap-bearish);
+}
+
+/* Structure State Pill */
+.qs-state {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 600;
+    background: rgba(59, 130, 246, 0.15);
+    color: var(--ap-accent);
+}
+
+.qs-state.trending {
+    background: rgba(34, 197, 94, 0.15);
+    color: var(--ap-bullish);
+}
+
+.qs-state.ranging {
+    background: rgba(234, 179, 8, 0.15);
+    color: var(--ap-warning);
+}
+
+.qs-state.neutral,
+.qs-state.transitional,
+.qs-state.reversal,
+.qs-state.breakout,
+.qs-state.pullback,
+.qs-state.exhaustion {
+    background: rgba(148, 163, 184, 0.15);
+    color: var(--ap-neutral);
+}
+
+/* Protected Levels */
+.qs-levels {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.qs-level {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.qs-level-icon {
+    font-size: 10px;
+}
+
+.qs-level-icon.high {
+    color: var(--ap-bullish);
+}
+
+.qs-level-icon.low {
+    color: var(--ap-bearish);
+}
+
+.qs-level-price {
+    font-size: 13px;
+    font-weight: 600;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+.qs-level-price.high {
+    color: var(--ap-bullish);
+}
+
+.qs-level-price.low {
+    color: var(--ap-bearish);
+}
+
+/* Liquidity Targets */
+.qs-liquidity {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.qs-liq-target {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+}
+
+.qs-liq-arrow {
+    font-size: 10px;
+    opacity: 0.7;
+}
+
+.qs-liq-price {
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-weight: 500;
+}
+
+/* Current Price - Prominent */
+.qs-price {
+    margin-left: auto;
+    font-size: 20px;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    color: var(--ap-text-primary);
+    padding: 0 8px;
+}
+
+/* Mini Range Bar for Quick Strip */
+.qs-range {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.qs-range-label {
+    font-size: 10px;
+    color: var(--ap-text-secondary);
+}
+
+.qs-range-bar {
+    display: flex;
+    width: 80px;
+    height: 6px;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.qs-range-zone {
+    flex: 1;
+}
+
+.qs-range-zone.premium {
+    background: rgba(239, 68, 68, 0.5);
+}
+
+.qs-range-zone.equilibrium {
+    background: rgba(234, 179, 8, 0.5);
+}
+
+.qs-range-zone.discount {
+    background: rgba(34, 197, 94, 0.5);
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+
+/* Panel width breakpoints */
+@media (max-width: 1400px) {
+    .ap-panel {
+        width: 300px;
+        max-width: 300px;
+        min-width: 260px;
+    }
+}
+
+@media (max-width: 1200px) {
+    .ap-panel {
+        width: 280px;
+        max-width: 280px;
+        min-width: 240px;
+    }
+
+    .ap-header {
+        padding: 16px 12px;
+    }
+
+    .ap-gauge {
+        width: 180px;
+        height: 100px;
+    }
+
+    .ap-direction-arrow {
+        font-size: 26px;
+    }
+
+    .ap-direction-label {
+        font-size: 10px;
+    }
+
+    .ap-conf-value {
+        font-size: 16px;
+    }
+}
+
+/* At tablet and phone widths, keep the chart full-width and expose analysis as a drawer. */
+@media (max-width: 1100px) {
+    .ap-panel {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 1200;
+        width: min(360px, calc(100vw - 24px));
+        max-width: min(360px, calc(100vw - 24px));
+        min-width: 0;
+        height: 100dvh;
+        transform: translateX(105%);
+        transition: transform 0.25s ease;
+        box-shadow: -16px 0 40px rgba(0, 0, 0, 0.35);
+    }
+
+    .ap-panel.is-mobile-open {
+        transform: translateX(0);
+    }
+
+    .ap-tab-content {
+        overscroll-behavior: contain;
+    }
+}
+
+/* Smaller panels */
+@media (max-width: 400px) {
+    .ap-panel {
+        width: calc(100vw - 16px);
+        max-width: calc(100vw - 16px);
+        min-width: 0;
+    }
+
+    .ap-tab-btn {
+        padding: 8px 8px;
+        font-size: 10px;
+    }
+
+    .ap-thesis {
+        padding: 10px;
+        margin: 0 8px 8px;
+    }
+
+    .ap-thesis-text {
+        font-size: 11px;
+    }
+
+    .ap-thesis-icon {
+        font-size: 16px;
+    }
+
+    .ap-events {
+        padding: 6px 8px;
+        margin: 0 8px 8px;
+    }
+
+    .ap-event-chip {
+        padding: 4px 8px;
+        font-size: 10px;
+    }
+
+    .ap-section-header {
+        padding: 10px 12px;
+    }
+
+    .ap-section-title {
+        font-size: 10px;
+    }
+
+    .ap-section-body {
+        padding: 12px;
+    }
+
+    .ap-label,
+    .ap-value {
+        font-size: 11px;
+    }
+
+    .ap-badge {
+        padding: 3px 8px;
+        font-size: 10px;
+    }
+
+    .ap-gauge {
+        width: 160px;
+        height: 88px;
+    }
+
+    .ap-direction-arrow {
+        font-size: 24px;
+    }
+
+}
+
+/* Tab responsiveness */
+.ap-tab-nav {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.ap-tab-nav::-webkit-scrollbar {
+    display: none;
+}
+
+/* Section card responsiveness */
+.ap-section {
+    margin-bottom: 8px;
+}
+
+.ap-section:last-child {
+    margin-bottom: 0;
+}
+
+/* MTF Dots responsiveness */
+.ap-mtf-dots {
+    flex-wrap: nowrap;
+}
+
+.ap-mtf-indicator {
+    width: 16px;
+    height: 16px;
+}
+
+.ap-mtf-label {
+    font-size: 9px;
+}
+
+/* Range bar responsiveness */
+.ap-range-bar {
+    margin: 10px 0 0;
+}
+
+.ap-range-labels {
+    font-size: 8px;
+    margin-top: 4px;
+}
+
+/* Level rows responsiveness */
+.ap-level {
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.ap-level-price {
+    font-size: 13px;
+}
+
+.ap-level-label {
+    font-size: 9px;
+}
+
+/* Protected level button */
+.ap-level-alert {
+    padding: 3px 6px;
+    font-size: 10px;
+}
+
+/* Footer responsiveness */
+.ap-footer {
+    padding: 10px 12px;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.ap-price {
+    font-size: 18px;
+}
+
+.ap-inv-label {
+    font-size: 9px;
+}
+
+.ap-inv-price {
+    font-size: 12px;
+}
+
+/* Quick Strip responsiveness */
+@media (max-width: 1200px) {
+    .qs-strip {
+        height: 50px;
+        padding: 0 12px;
+    }
+
+    .qs-badge {
+        padding: 6px 12px;
+        font-size: 11px;
+    }
+
+    .qs-label {
+        font-size: 9px;
+    }
+
+    .qs-value {
+        font-size: 12px;
+    }
+
+    .qs-price {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 400px) {
+    .qs-strip {
+        height: 44px;
+        padding: 0 8px;
+    }
+
+    .qs-item {
+        padding: 0 10px;
+        gap: 6px;
+    }
+
+    .qs-divider {
+        height: 24px;
+    }
+
+    .qs-badge {
+        padding: 5px 10px;
+        font-size: 10px;
+    }
+
+    .qs-level-price {
+        font-size: 11px;
+    }
+
+    .qs-price {
+        font-size: 14px;
+    }
+}
+
+/* Alert ticker responsiveness */
+@media (max-width: 1200px) {
+    .qs-alert-ticker {
+        min-width: 280px;
+    }
+
+    .qs-alert-item {
+        padding: 5px 12px;
+        font-size: 11px;
+    }
+}
+
+@media (max-width: 400px) {
+    .qs-alert-ticker {
+        min-width: 200px;
+        height: 32px;
+    }
+
+    .qs-alert-item {
+        padding: 4px 10px;
+        font-size: 10px;
+    }
+
+    .qs-alert-icon {
+        font-size: 12px;
+    }
+}
+
+
+/* ============================================
+   LIGHT THEME SUPPORT
+   ============================================ */
+[data-theme="light"] {
+    --ap-bg: #f8fafc;
+    --ap-bg-card: rgba(255, 255, 255, 0.95);
+    --ap-bg-section: rgba(241, 245, 249, 0.95);
+    --ap-border: rgba(0, 0, 0, 0.08);
+    --ap-text-primary: #1e293b;
+    --ap-text-secondary: rgba(0, 0, 0, 0.6);
+    --ap-text-muted: rgba(0, 0, 0, 0.4);
+}
+
+/* Quick Strip Light Theme */
+
+[data-theme="light"] .qs-divider {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .qs-label {
+    color: rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="light"] .qs-value {
+    color: #1e293b;
+}
+
+[data-theme="light"] .qs-state {
+    background: rgba(59, 130, 246, 0.1);
+    color: #2563eb;
+}
+
+[data-theme="light"] .qs-state.trending {
+    background: rgba(34, 197, 94, 0.1);
+    color: #16a34a;
+}
+
+[data-theme="light"] .qs-state.ranging {
+    background: rgba(234, 179, 8, 0.1);
+    color: #ca8a04;
+}
+
+[data-theme="light"] .qs-level-price {
+    color: #1e293b;
+}
+
+[data-theme="light"] .qs-level-price.high {
+    color: #16a34a;
+}
+
+[data-theme="light"] .qs-level-price.low {
+    color: #dc2626;
+}
+
+[data-theme="light"] .qs-liq-price {
+    color: #1e293b;
+}
+
+[data-theme="light"] .qs-price {
+    color: #1e293b;
+}
+
+/* ============================================
+   ALERT TICKER (Scrolling Alerts)
+   ============================================ */
+.qs-alert-ticker {
+    flex: 2;
+    min-width: 350px;
+    height: 36px;
+    position: relative;
+    overflow: hidden;
+    margin-left: auto;
+    margin-right: 16px;
+    /* Fade edges */
+    -webkit-mask-image: linear-gradient(to right,
+            transparent 0%,
+            black 10%,
+            black 90%,
+            transparent 100%);
+    mask-image: linear-gradient(to right,
+            transparent 0%,
+            black 10%,
+            black 90%,
+            transparent 100%);
+}
+
+.qs-alert-track {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    height: 100%;
+    /* Animation handled by JS for seamless recycling */
+}
+
+.qs-alert-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    background: rgba(59, 130, 246, 0.1);
+    border-radius: 18px;
+    font-size: 12px;
+    color: var(--ap-accent);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.qs-alert-item.warning {
+    background: rgba(234, 179, 8, 0.1);
+    color: var(--ap-warning);
+}
+
+.qs-alert-item.bullish {
+    background: rgba(34, 197, 94, 0.1);
+    color: var(--ap-bullish);
+}
+
+.qs-alert-item.bearish {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--ap-bearish);
+}
+
+.qs-alert-icon {
+    font-size: 14px;
+}
+
+.qs-alert-text {
+    font-weight: 500;
+}
+
+.qs-alert-time {
+    opacity: 0.6;
+    font-size: 10px;
+    margin-left: 4px;
+}
+
+/* Scrolling animation - right to left */
+@keyframes scrollAlerts {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+/* Light theme for ticker */
+[data-theme="light"] .qs-alert-item {
+    background: rgba(59, 130, 246, 0.08);
+    color: #2563eb;
+}
+
+[data-theme="light"] .qs-alert-item.warning {
+    background: rgba(234, 179, 8, 0.08);
+    color: #ca8a04;
+}
+
+[data-theme="light"] .qs-alert-item.bullish {
+    background: rgba(34, 197, 94, 0.08);
+    color: #16a34a;
+}
+
+[data-theme="light"] .qs-alert-item.bearish {
+    background: rgba(239, 68, 68, 0.08);
+    color: #dc2626;
+}

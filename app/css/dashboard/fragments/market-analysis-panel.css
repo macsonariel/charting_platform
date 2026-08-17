@@ -1,0 +1,2312 @@
+/* Fragment-specific wrapper — import core market-analysis rules */
+@import "../../dashboard/market-analysis.css";
+
+/* ========================================
+   CLEAN DUAL TIMEFRAME ANALYSIS PANEL
+   Minimal, borderless design with animations
+   ======================================== */
+
+/* Analysis Header - Centered Toggle */
+.analysis-header {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    padding: 0.6rem 1rem;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+    gap: 1rem;
+}
+
+.analysis-header h3 {
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin: 0;
+    color: #334155;
+    letter-spacing: 0.3px;
+    justify-self: start;
+}
+
+.analysis-toggle {
+    justify-self: center;
+    display: flex;
+    gap: 0;
+    background: var(--bg-tertiary);
+    border-radius: 6px;
+    padding: 2px;
+}
+
+.toggle-btn {
+    padding: 0.35rem 0.9rem;
+    font-size: 0.65rem;
+    font-weight: 600;
+    border: none;
+    background: transparent;
+    color: #64748b;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    text-transform: capitalize;
+    letter-spacing: 0.4px;
+}
+
+.toggle-btn:hover {
+    color: #475569;
+}
+
+.toggle-btn.active {
+    background: #cbd5e1;
+    color: #0f172a;
+}
+
+.close-analysis-btn {
+    justify-self: end;
+    background: transparent;
+    border: none;
+    color: #64748b;
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 0.2rem;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.close-analysis-btn:hover {
+    color: #0f172a;
+    background: #e2e8f0;
+}
+
+/* Bento Grid Layout - Single row, no gaps */
+.bento-grid {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 0;
+    padding: 0.5rem 0.75rem;
+    background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: 12px;
+}
+
+.bento-grid .bento-card {
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+/* Card Base Styles - Modern with subtle gradients */
+.bento-card {
+    background: linear-gradient(145deg, var(--bg-surface) 0%, var(--bg-secondary) 100%);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 0.875rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow:
+        0 1px 3px rgba(0, 0, 0, 0.04),
+        0 4px 12px rgba(0, 0, 0, 0.03);
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Loading state animation for bento cards */
+.bento-card.loading {
+    pointer-events: none;
+}
+
+.bento-card.loading .card-main {
+    opacity: 0.4;
+}
+
+.bento-card.loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.4) 50%,
+            transparent 100%);
+    animation: shimmer 1.5s infinite;
+    pointer-events: none;
+    z-index: 10;
+}
+
+@keyframes shimmer {
+    0% {
+        left: -100%;
+    }
+
+    100% {
+        left: 100%;
+    }
+}
+
+.bento-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, transparent);
+    border-radius: 16px 16px 0 0;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.bento-card:hover {
+    transform: translateY(-4px);
+    box-shadow:
+        0 8px 25px rgba(0, 0, 0, 0.08),
+        0 4px 10px rgba(0, 0, 0, 0.04);
+    border-color: rgba(148, 163, 184, 0.4);
+}
+
+.bento-card:hover::before {
+    opacity: 1;
+}
+
+/* Card Header with Icon */
+.bento-card .card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.625rem;
+}
+
+/* Icon Wrapper - Glassmorphism style */
+.card-icon-wrapper {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.card-icon-wrapper::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: inherit;
+    opacity: 0.15;
+    border-radius: inherit;
+}
+
+.card-icon {
+    width: 16px;
+    height: 16px;
+    position: relative;
+    z-index: 1;
+}
+
+/* Icon color variations */
+.phase-icon {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+}
+
+.phase-icon .card-icon {
+    stroke: white;
+}
+
+.bias-icon {
+    background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+    box-shadow: 0 2px 8px rgba(6, 182, 212, 0.3);
+}
+
+.bias-icon .card-icon {
+    stroke: white;
+}
+
+.event-icon {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+}
+
+.event-icon .card-icon {
+    stroke: white;
+}
+
+.levels-icon {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+.levels-icon .card-icon {
+    stroke: white;
+}
+
+.swing-icon {
+    background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+    box-shadow: 0 2px 8px rgba(236, 72, 153, 0.3);
+}
+
+.swing-icon .card-icon {
+    stroke: white;
+}
+
+.bento-card .card-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    letter-spacing: 0.75px;
+    text-transform: uppercase;
+}
+
+/* Reset inner card spacing */
+.bento-card .card-main {
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Card accent elements */
+.card-accent-bar {
+    display: none;
+}
+
+.card-glow {
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(245, 158, 11, 0.1) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.card-wave-bg {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 40%;
+    background: linear-gradient(180deg, transparent 0%, rgba(236, 72, 153, 0.05) 100%);
+    pointer-events: none;
+    border-radius: 0 0 16px 16px;
+}
+
+/* Sparkline SVG Styling */
+.card-sparkline-svg {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    width: 100%;
+    pointer-events: none;
+    border-radius: 0 0 16px 16px;
+    overflow: hidden;
+    opacity: 0.5;
+    transition: opacity 0.3s ease;
+}
+
+.bento-card:hover .card-sparkline-svg {
+    opacity: 0.75;
+}
+
+/* Sparkline line animations */
+.sparkline-line {
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: stroke 0.3s ease;
+}
+
+.sparkline-area {
+    transition: fill 0.3s ease;
+}
+
+.sparkline-point {
+    transition: fill 0.3s ease, r 0.2s ease;
+}
+
+.bento-card:hover .sparkline-point {
+    r: 4;
+}
+
+/* Sparkline level line (for BOS/CHoCH break lines) */
+.sparkline-level {
+    stroke-opacity: 0.7;
+    stroke-width: 1;
+}
+
+/* Sparkline break point (where the break occurs) */
+.sparkline-point.break-point {
+    fill-opacity: 0.9;
+}
+
+/* Swing apex point (main swing high/low) */
+.sparkline-point.swing-apex {
+    fill-opacity: 0.95;
+}
+
+.bento-card:hover .sparkline-point.swing-apex {
+    r: 5;
+}
+
+/* Phase sparkline specific */
+.phase-sparkline-svg .sparkline-line.uptrend {
+    stroke: #22c55e;
+}
+
+.phase-sparkline-svg .sparkline-line.downtrend {
+    stroke: #ef4444;
+}
+
+.phase-sparkline-svg .sparkline-line.ranging {
+    stroke: #f59e0b;
+}
+
+/* Event sparkline specific */
+.event-sparkline-svg .sparkline-line.bos-bullish,
+.event-sparkline-svg .sparkline-line.choch-bullish {
+    stroke: #22c55e;
+}
+
+.event-sparkline-svg .sparkline-line.bos-bearish,
+.event-sparkline-svg .sparkline-line.choch-bearish {
+    stroke: #ef4444;
+}
+
+/* Swing sparkline specific */
+.swing-sparkline-svg .sparkline-line.swing-high {
+    stroke: #22c55e;
+}
+
+.swing-sparkline-svg .sparkline-line.swing-low {
+    stroke: #ef4444;
+}
+
+.swing-sparkline-svg .sparkline-point.swing-high {
+    fill: #22c55e;
+}
+
+.swing-sparkline-svg .sparkline-point.swing-low {
+    fill: #ef4444;
+}
+
+/* Hide old card-sparkline div */
+.card-sparkline {
+    display: none;
+}
+
+/* Phase Card - Enhanced */
+.phase-card .card-main {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+
+.bento-card.phase-card::before {
+    background: linear-gradient(90deg, #6366f1, #8b5cf6);
+}
+
+/* Phase card backgrounds based on trend direction */
+.bento-card.phase-card:has(.phase-name.uptrend),
+.bento-card.phase-card.uptrend {
+    background: linear-gradient(145deg, rgba(34, 197, 94, 0.12) 0%, rgba(22, 163, 74, 0.08) 100%);
+    border-color: rgba(34, 197, 94, 0.3);
+}
+
+.bento-card.phase-card.uptrend::before {
+    background: linear-gradient(90deg, #22c55e, #16a34a);
+}
+
+.bento-card.phase-card.uptrend:hover::before {
+    opacity: 1;
+}
+
+.bento-card.phase-card:has(.phase-name.downtrend),
+.bento-card.phase-card.downtrend {
+    background: linear-gradient(145deg, rgba(239, 68, 68, 0.12) 0%, rgba(220, 38, 38, 0.08) 100%);
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+.bento-card.phase-card.downtrend::before {
+    background: linear-gradient(90deg, #ef4444, #dc2626);
+}
+
+.bento-card.phase-card.downtrend:hover::before {
+    opacity: 1;
+}
+
+.bento-card.phase-card:has(.phase-name.ranging),
+.bento-card.phase-card.ranging {
+    background: linear-gradient(145deg, rgba(245, 158, 11, 0.12) 0%, rgba(217, 119, 6, 0.08) 100%);
+    border-color: rgba(245, 158, 11, 0.3);
+}
+
+.bento-card.phase-card.ranging::before {
+    background: linear-gradient(90deg, #f59e0b, #d97706);
+}
+
+.bento-card.phase-card.ranging:hover::before {
+    opacity: 1;
+}
+
+/* Hide sparkline when phase is neutral (no direction class) */
+.bento-card.phase-card:not(.uptrend):not(.downtrend):not(.ranging) .card-sparkline-svg {
+    display: none;
+}
+
+
+.bento-card.bias-card::before {
+    background: linear-gradient(90deg, #06b6d4, #0891b2);
+}
+
+
+.bento-card.event-card::before {
+    background: linear-gradient(90deg, #f59e0b, #d97706);
+}
+
+
+.bento-card.levels-card::before {
+    background: linear-gradient(90deg, #10b981, #059669);
+}
+
+
+.bento-card.swing-card::before {
+    background: linear-gradient(90deg, #ec4899, #db2777);
+}
+
+/* Swing card backgrounds */
+.bento-card.swing-card:has(.swing-type.high),
+.bento-card.swing-card.high {
+    background: linear-gradient(145deg, rgba(22, 163, 74, 0.12) 0%, rgba(22, 163, 74, 0.06) 100%);
+    border-color: rgba(22, 163, 74, 0.3);
+}
+
+.bento-card.swing-card.high::before {
+    background: linear-gradient(90deg, #22c55e, #16a34a);
+}
+
+.bento-card.swing-card.high:hover::before {
+    opacity: 1;
+}
+
+.bento-card.swing-card:has(.swing-type.low),
+.bento-card.swing-card.low {
+    background: linear-gradient(145deg, rgba(220, 38, 38, 0.12) 0%, rgba(220, 38, 38, 0.06) 100%);
+    border-color: rgba(220, 38, 38, 0.3);
+}
+
+.bento-card.swing-card.low::before {
+    background: linear-gradient(90deg, #ef4444, #dc2626);
+}
+
+.bento-card.swing-card.low:hover::before {
+    opacity: 1;
+}
+
+.phase-card .card-direction {
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: capitalize;
+    color: var(--text-primary);
+    text-align: center;
+}
+
+/* Phase main - Enhanced */
+.phase-main {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 4px;
+}
+
+.phase-name {
+    font-size: 0.9rem;
+    padding-top: 0.5rem;
+    font-weight: 800;
+    text-transform: capitalize;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+}
+
+/* Phase name colors */
+.phase-name.uptrend {
+    color: #16a34a;
+}
+
+.phase-name.downtrend {
+    color: #dc2626;
+}
+
+.phase-name.ranging {
+    color: #d97706;
+}
+
+/* Enhanced confidence display */
+.phase-confidence {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background: rgba(100, 116, 139, 0.08);
+    border-radius: 20px;
+    font-size: 0.7rem;
+}
+
+.confidence-label {
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.confidence-value {
+    color: var(--text-primary);
+    font-weight: 700;
+}
+
+/* Bias card styling - Enhanced */
+.bias-main {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 8px;
+    text-align: center;
+}
+
+.bias-headline {
+    font-size: 0.9rem;
+    font-weight: 800;
+    line-height: 1.2;
+    padding-top: 0.5rem;
+    display: block;
+    width: 100%;
+    text-align: center;
+    letter-spacing: -0.02em;
+}
+
+.bias-headline.bullish {
+    color: #16a34a;
+}
+
+.bias-headline.bearish {
+    color: #dc2626;
+}
+
+.bias-headline.weak {
+    color: #d97706;
+}
+
+.bias-headline.neutral {
+    color: #64748b;
+}
+
+.bias-description {
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    line-height: 1.35;
+    padding: 4px 8px;
+    background: rgba(100, 116, 139, 0.06);
+    border-radius: 6px;
+}
+
+/* Bias card backgrounds based on direction */
+.bento-card.bias-card.bullish {
+    background: linear-gradient(145deg, rgba(22, 163, 74, 0.12) 0%, rgba(22, 163, 74, 0.06) 100%);
+    border-color: rgba(22, 163, 74, 0.3);
+}
+
+.bento-card.bias-card.bullish::before {
+    background: linear-gradient(90deg, #22c55e, #16a34a);
+}
+
+.bento-card.bias-card.bullish:hover::before {
+    opacity: 1;
+}
+
+.bento-card.bias-card.bullish .card-accent-bar {
+    background: linear-gradient(90deg, #22c55e, #16a34a);
+}
+
+.bento-card.bias-card.bearish {
+    background: linear-gradient(145deg, rgba(220, 38, 38, 0.12) 0%, rgba(220, 38, 38, 0.06) 100%);
+    border-color: rgba(220, 38, 38, 0.3);
+}
+
+.bento-card.bias-card.bearish::before {
+    background: linear-gradient(90deg, #ef4444, #dc2626);
+}
+
+.bento-card.bias-card.bearish:hover::before {
+    opacity: 1;
+}
+
+.bento-card.bias-card.bearish .card-accent-bar {
+    background: linear-gradient(90deg, #ef4444, #dc2626);
+}
+
+.bento-card.bias-card.weak-bullish,
+.bento-card.bias-card.weak-bearish {
+    background: linear-gradient(145deg, rgba(245, 158, 11, 0.12) 0%, rgba(217, 119, 6, 0.06) 100%);
+    border-color: rgba(245, 158, 11, 0.3);
+}
+
+.bento-card.bias-card.weak-bullish::before,
+.bento-card.bias-card.weak-bearish::before {
+    background: linear-gradient(90deg, #f59e0b, #d97706);
+}
+
+.bento-card.bias-card.weak-bullish:hover::before,
+.bento-card.bias-card.weak-bearish:hover::before {
+    opacity: 1;
+}
+
+.bento-card.bias-card.weak-bullish .card-accent-bar,
+.bento-card.bias-card.weak-bearish .card-accent-bar {
+    background: linear-gradient(90deg, #f59e0b, #d97706);
+}
+
+/* Disable skeleton/pulsing overlay for bias card */
+.bento-card.bias-card .card-main::after {
+    display: none !important;
+}
+
+.bento-card.bias-card .card-main {
+    background: transparent;
+}
+
+.confidence-bar {
+    position: relative;
+    width: 100%;
+    height: 6px;
+    background: rgba(226, 232, 240, 0.8);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.bar-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    background: linear-gradient(90deg, #22c55e, #4ade80);
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 3px;
+}
+
+.bar-value {
+    position: absolute;
+    right: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.55rem;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+/* Direction Card - Clean text only */
+.direction-card .card-main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 50px;
+}
+
+.direction-badge {
+    font-size: 1.1rem;
+    font-weight: 800;
+    text-transform: capitalize;
+    background: none;
+    border: none;
+    padding: 0;
+}
+
+.direction-badge.bullish {
+    color: #16a34a;
+}
+
+.direction-badge.bearish {
+    color: #dc2626;
+}
+
+.direction-badge.neutral {
+    color: #64748b;
+}
+
+/* Pattern Card with Enhanced Line Chart */
+.pattern-card .card-main {
+    display: flex;
+    flex-direction: column;
+}
+
+.structure-line-chart {
+    width: 100%;
+    height: 60px;
+    max-height: 100%;
+    border-radius: 6px;
+    background: linear-gradient(180deg, rgba(241, 245, 249, 0.9) 0%, rgba(248, 250, 252, 0.7) 100%);
+    border: none;
+    overflow: visible;
+    display: block;
+    box-sizing: border-box;
+}
+
+.structure-line-chart .line-path {
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.structure-line-chart .area-fill {
+    opacity: 0.4;
+}
+
+/* Hide pattern labels */
+.pattern-labels {
+    display: none;
+}
+
+/* Swing Card - Enhanced */
+.swing-card .card-main {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 0.35rem;
+    min-height: 40px;
+    transform-origin: center center;
+}
+
+.swing-card .card-main>* {
+    transform-origin: center center;
+}
+
+.swing-type {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    font-weight: 900;
+    padding: 6px 12px;
+    border-radius: 8px;
+    text-transform: capitalize;
+    background: transparent;
+    border: none;
+    width: auto;
+    height: auto;
+    line-height: 1;
+    letter-spacing: -0.02em;
+}
+
+.swing-type.high {
+    color: #16a34a;
+    background: rgba(22, 163, 74, 0.1);
+}
+
+.swing-type.low {
+    color: #dc2626;
+    background: rgba(220, 38, 38, 0.1);
+}
+
+.swing-price {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #475569;
+    width: 100%;
+    padding: 4px 8px;
+    background: rgba(100, 116, 139, 0.06);
+    border-radius: 6px;
+}
+
+/* Event Card - Enhanced */
+.bento-card.event-card {
+    background: linear-gradient(145deg, #ffffff 0%, #fffbeb 100%);
+    border-color: rgba(245, 158, 11, 0.2);
+}
+
+.event-card .card-main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    min-height: 40px;
+    text-align: center;
+}
+
+.event-card .card-main>* {
+    transform-origin: center center;
+}
+
+/* Large emphasized event type */
+.event-type-large {
+    font-size: 0.9rem;
+    font-weight: 900;
+    padding: 6px 12px;
+    border-radius: 8px;
+    text-transform: capitalize;
+    min-width: 64px;
+    text-align: center;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    letter-spacing: -0.02em;
+}
+
+/* Event type text colors with subtle backgrounds */
+.event-type-large.bullish {
+    color: #16a34a;
+    background: rgba(22, 163, 74, 0.1);
+}
+
+.event-type-large.bearish {
+    color: #dc2626;
+    background: rgba(220, 38, 38, 0.1);
+}
+
+.event-type-large.choch {
+    font-size: 0.85rem;
+    padding: 0.25rem 0.5rem;
+}
+
+/* Direction indicator */
+.event-direction {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: rgba(100, 116, 139, 0.06);
+}
+
+.event-direction.bullish {
+    color: #16a34a;
+}
+
+.event-direction.bearish {
+    color: #dc2626;
+}
+
+/* Event card backgrounds based on direction */
+.bento-card.event-card:has(.event-direction.bullish),
+.bento-card.event-card.bullish {
+    background: linear-gradient(145deg, rgba(22, 163, 74, 0.12) 0%, rgba(22, 163, 74, 0.04) 100%);
+    border-color: rgba(22, 163, 74, 0.3);
+}
+
+.bento-card.event-card.bullish::before {
+    background: linear-gradient(90deg, #22c55e, #16a34a);
+}
+
+.bento-card.event-card.bullish:hover::before {
+    opacity: 1;
+}
+
+.bento-card.event-card:has(.event-direction.bearish),
+.bento-card.event-card.bearish {
+    background: linear-gradient(145deg, rgba(220, 38, 38, 0.12) 0%, rgba(220, 38, 38, 0.04) 100%);
+    border-color: rgba(220, 38, 38, 0.3);
+}
+
+.bento-card.event-card.bearish::before {
+    background: linear-gradient(90deg, #ef4444, #dc2626);
+}
+
+.bento-card.event-card.bearish:hover::before {
+    opacity: 1;
+}
+
+.event-arrow {
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+/* Levels Card - Enhanced */
+.bento-card.levels-card {
+    background: linear-gradient(145deg, #ffffff 0%, #f0fdf4 100%);
+    border-color: rgba(16, 185, 129, 0.2);
+}
+
+.levels-card .card-main {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    justify-content: center;
+    padding: 4px 0;
+}
+
+.level-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 8px;
+    transition: background 0.2s ease;
+}
+
+.level-item:hover {
+    background: rgba(100, 116, 139, 0.06);
+}
+
+.level-indicator {
+    font-size: 0.65rem;
+    font-weight: 700;
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+}
+
+.bullish-level .level-indicator {
+    color: #16a34a;
+    background: rgba(22, 163, 74, 0.15);
+}
+
+.bearish-level .level-indicator {
+    color: #dc2626;
+    background: rgba(220, 38, 38, 0.15);
+}
+
+.level-label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: #64748b;
+    flex: 1;
+}
+
+.level-value {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: #0f172a;
+    font-feature-settings: 'tnum';
+}
+
+.level-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(148, 163, 184, 0.3), transparent);
+    margin: 0 8px;
+}
+
+.level-item {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 0.35rem 0.5rem;
+    border-radius: 4px;
+    background: transparent;
+    border: 1px solid #e2e8f0;
+    width: 100%;
+    box-sizing: border-box;
+    min-width: 0;
+}
+
+.level-item:first-child {
+    border-color: rgba(22, 163, 74, 0.3);
+}
+
+.level-item:last-child {
+    border-color: rgba(220, 38, 38, 0.3);
+}
+
+.level-label {
+    font-size: 0.6rem;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.level-item:first-child .level-label {
+    color: #16a34a;
+}
+
+.level-item:last-child .level-label {
+    color: #dc2626;
+}
+
+.level-value {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #0f172a;
+    text-align: right;
+}
+
+/* Volume Card */
+.volume-card .card-main {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.volume-card .bar-chart {
+    width: 100%;
+    height: 45px;
+    max-height: 100%;
+    display: block;
+    box-sizing: border-box;
+    flex-shrink: 0;
+}
+
+.volume-card .volume-bar {
+    transition: fill 0.3s ease, opacity 0.3s ease;
+}
+
+.volume-card .volume-bar:hover {
+    opacity: 0.8;
+}
+
+.volume-summary {
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: #64748b;
+    text-align: center;
+    padding-top: 0.2rem;
+}
+
+/* Volatility Card */
+.volatility-card .card-main {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.volatility-card .bar-chart {
+    width: 100%;
+    height: 45px;
+    max-height: 100%;
+    display: block;
+    box-sizing: border-box;
+    flex-shrink: 0;
+}
+
+.volatility-card .volatility-bar {
+    transition: fill 0.3s ease, opacity 0.3s ease;
+}
+
+.volatility-card .volatility-bar:hover {
+    opacity: 0.8;
+}
+
+.volatility-summary {
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: #64748b;
+    text-align: center;
+    padding-top: 0.2rem;
+}
+
+/* Bar Chart Animations */
+@keyframes barGrowUp {
+    from {
+        transform: scaleY(0);
+        opacity: 0;
+    }
+
+    to {
+        transform: scaleY(1);
+        opacity: 1;
+    }
+}
+
+.bar-chart rect {
+    transform-origin: bottom;
+    animation: barGrowUp 0.6s ease-out backwards;
+}
+
+/* Market Analysis Panel Container */
+.market-analysis-panel {
+    margin-top: 0.5rem;
+    margin-bottom: 15px;
+    background: var(--bg-surface);
+    border-top: 1px solid var(--border-color);
+    border-radius: 0;
+    overflow: hidden;
+    animation: panelSlideUp 0.3s ease-out;
+}
+
+@keyframes panelSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+
+/* Line Chart Animation */
+@keyframes lineDrawAnimation {
+    0% {
+        stroke-dashoffset: 1000;
+    }
+
+    100% {
+        stroke-dashoffset: 0;
+    }
+}
+
+@keyframes areaFadeIn {
+    0% {
+        opacity: 0;
+        transform: scaleY(0);
+        transform-origin: bottom;
+    }
+
+    100% {
+        opacity: 0.4;
+        transform: scaleY(1);
+    }
+}
+
+@keyframes pointPop {
+    0% {
+        opacity: 0;
+        transform: scale(0);
+    }
+
+    50% {
+        transform: scale(1.3);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.structure-line-chart .line-path {
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+    animation: lineDrawAnimation 1.5s ease-out forwards;
+}
+
+.structure-line-chart .area-fill {
+    animation: areaFadeIn 1s ease-out 0.3s forwards;
+    opacity: 0;
+}
+
+.swing-points circle {
+    opacity: 0;
+    animation: pointPop 0.4s ease-out forwards;
+}
+
+.swing-points circle:nth-child(1) {
+    animation-delay: 0.3s;
+}
+
+.swing-points circle:nth-child(2) {
+    animation-delay: 0.45s;
+}
+
+.swing-points circle:nth-child(3) {
+    animation-delay: 0.6s;
+}
+
+.swing-points circle:nth-child(4) {
+    animation-delay: 0.75s;
+}
+
+.swing-points circle:nth-child(5) {
+    animation-delay: 0.9s;
+}
+
+.swing-points circle:nth-child(6) {
+    animation-delay: 1.05s;
+}
+
+.swing-points circle:nth-child(7) {
+    animation-delay: 1.2s;
+}
+
+.swing-points circle:nth-child(8) {
+    animation-delay: 1.35s;
+}
+
+/* Continuous line glow animation */
+@keyframes lineGlow {
+
+    0%,
+    100% {
+        filter: drop-shadow(0 0 2px currentColor);
+    }
+
+    50% {
+        filter: drop-shadow(0 0 6px currentColor);
+    }
+}
+
+.structure-line-chart .line-path.animated {
+    animation: lineDrawAnimation 1.5s ease-out forwards, lineGlow 2s ease-in-out infinite 1.5s;
+}
+
+/* ========================================
+   RESPONSIVE DESIGN — BENTO GRID & CARDS
+   ======================================== */
+
+/* Large tablets / small desktops (≤1024px): 3 columns, wrap remaining cards */
+@media (max-width: 1280px) {
+    .bento-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-rows: auto;
+        gap: 0.5rem;
+        padding: 0.6rem;
+    }
+
+    /* Header adjustments for medium screens */
+    .analysis-header {
+        padding: 0.5rem 0.8rem;
+        gap: 0.75rem;
+    }
+
+    .analysis-header h3 {
+        font-size: 0.75rem;
+    }
+
+    .toggle-btn {
+        padding: 0.3rem 0.7rem;
+        font-size: 0.6rem;
+    }
+
+    .close-analysis-btn {
+        width: 26px;
+        height: 26px;
+        font-size: 1rem;
+    }
+
+    /* Reset explicit column spans so cards flow naturally */
+    .bento-card.phase-card,
+    .bento-card.bias-card,
+    .bento-card.event-card,
+    .bento-card.levels-card,
+    .bento-card.swing-card {
+        grid-column: auto;
+    }
+
+    .bento-card .card-label {
+        font-size: 0.55rem;
+    }
+
+    .phase-name,
+    .bias-headline,
+    .event-type-large,
+    .swing-type.high,
+    .swing-type.low {
+        font-size: 0.8rem;
+    }
+
+    .phase-confidence,
+    .bias-description,
+    .event-price,
+    .swing-price {
+        font-size: 0.65rem;
+    }
+}
+
+/* Tablets (≤768px): 2 columns */
+@media (max-width: 768px) {
+    .bento-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.4rem;
+        padding: 0.5rem;
+    }
+
+    .bento-card {
+        padding: 0.5rem;
+    }
+
+    .analysis-header {
+        grid-template-columns: 1fr;
+        gap: 0.4rem;
+        padding: 0.5rem 0.6rem;
+        text-align: center;
+        position: relative;
+    }
+
+    .analysis-header h3 {
+        justify-self: center;
+        font-size: 0.7rem;
+        order: 1;
+    }
+
+    .analysis-toggle {
+        order: 2;
+        width: 100%;
+        justify-content: center;
+    }
+
+    .toggle-btn {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.55rem;
+        flex: 1;
+        max-width: 120px;
+    }
+
+    .close-analysis-btn {
+        position: absolute;
+        top: 0.4rem;
+        right: 0.4rem;
+        width: 24px;
+        height: 24px;
+        font-size: 0.9rem;
+    }
+
+    .bento-card .card-label {
+        font-size: 0.5rem;
+    }
+
+    .phase-name,
+    .bias-headline,
+    .event-type-large,
+    .swing-type.high,
+    .swing-type.low {
+        font-size: 0.75rem;
+    }
+
+    .phase-confidence,
+    .bias-description,
+    .event-price,
+    .swing-price {
+        font-size: 0.6rem;
+    }
+
+    .level-row {
+        flex-direction: column;
+        gap: 0.15rem;
+    }
+
+    .level-label,
+    .level-value {
+        font-size: 0.6rem;
+    }
+}
+
+/* Small phones (≤480px): single column stack */
+@media (max-width: 480px) {
+    .bento-grid {
+        grid-template-columns: 1fr;
+        gap: 0.35rem;
+        padding: 0.4rem;
+    }
+
+    .bento-card {
+        padding: 0.4rem 0.5rem;
+    }
+
+    /* Header compact mode for small screens */
+    .analysis-header {
+        padding: 0.4rem 0.5rem;
+        gap: 0.3rem;
+    }
+
+    .analysis-header h3 {
+        font-size: 0.65rem;
+        padding-right: 28px;
+        /* Space for close button */
+    }
+
+    .analysis-toggle {
+        width: 100%;
+        justify-content: center;
+        padding: 1px;
+    }
+
+    .toggle-btn {
+        flex: 1;
+        text-align: center;
+        padding: 0.25rem 0.4rem;
+        font-size: 0.5rem;
+        letter-spacing: 0.2px;
+    }
+
+    .close-analysis-btn {
+        width: 22px;
+        height: 22px;
+        font-size: 0.85rem;
+        top: 0.35rem;
+        right: 0.35rem;
+    }
+
+    .bento-card .card-label {
+        font-size: 0.5rem;
+    }
+
+    .phase-name,
+    .bias-headline,
+    .event-type-large,
+    .swing-type.high,
+    .swing-type.low {
+        font-size: 0.7rem;
+    }
+
+    .phase-confidence,
+    .bias-description,
+    .event-price,
+    .swing-price {
+        font-size: 0.55rem;
+    }
+
+    .analysis-toggle {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .toggle-btn {
+        flex: 1;
+        text-align: center;
+    }
+}
+
+/* Skeleton Loading Animation for Cards */
+.bento-card .card-main {
+    position: relative;
+    overflow: hidden;
+    min-height: 40px;
+}
+
+/* Show skeleton animation on card-main (visible when content is empty or placeholder) */
+.bento-card .card-main::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg,
+            rgba(226, 232, 240, 0.2) 0%,
+            rgba(226, 232, 240, 0.4) 50%,
+            rgba(226, 232, 240, 0.2) 100%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Hide skeleton when card-main has substantial content */
+.bento-card .card-main:has(> *:not(:empty):not([id*="current"]):not([id*="smc"]))::after,
+.bento-card .card-main:has(> * > *:not(:empty))::after {
+    display: none;
+}
+
+@keyframes skeleton-loading {
+    0% {
+        background-position: -200% 0;
+    }
+
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+/* Specific skeleton styles for different card types */
+.phase-card .card-main::after {
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.event-card .card-main::after,
+.swing-card .card-main::after {
+    height: 20px;
+    border-radius: 4px;
+    width: 80%;
+    left: 10%;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.levels-card .card-main::after {
+    height: 30px;
+    border-radius: 4px;
+}
+
+.pattern-card .card-main::after {
+    height: 60px;
+    border-radius: 4px;
+}
+
+/* Card Entrance Animations */
+
+.bento-card {
+    animation: cardFadeIn 0.3s ease-out both;
+}
+
+.bento-card:nth-child(1) {
+    animation-delay: 0.05s;
+}
+
+.bento-card:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.bento-card:nth-child(3) {
+    animation-delay: 0.15s;
+}
+
+.bento-card:nth-child(4) {
+    animation-delay: 0.2s;
+}
+
+.bento-card:nth-child(5) {
+    animation-delay: 0.25s;
+}
+
+.bento-card:nth-child(6) {
+    animation-delay: 0.3s;
+}
+
+@keyframes cardFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ========================================
+   DARK THEME OVERRIDES
+   ======================================== */
+
+[data-theme="dark"] .analysis-header {
+    background: #1e293b;
+    border-bottom: 1px solid #334155;
+}
+
+[data-theme="dark"] .analysis-header h3 {
+    color: #94a3b8;
+}
+
+[data-theme="dark"] .analysis-toggle {
+    background: #334155;
+}
+
+[data-theme="dark"] .toggle-btn:hover {
+    color: #94a3b8;
+}
+
+[data-theme="dark"] .toggle-btn.active {
+    background: #475569;
+    color: #f1f5f9;
+}
+
+[data-theme="dark"] .close-analysis-btn:hover {
+    color: #f1f5f9;
+    background: #475569;
+}
+
+/* Dark Theme - Bento Grid Enhanced */
+[data-theme="dark"] .bento-grid {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+}
+
+[data-theme="dark"] .bento-card {
+    background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%);
+    border: 1px solid rgba(71, 85, 105, 0.4);
+    box-shadow:
+        0 4px 12px rgba(0, 0, 0, 0.3),
+        0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark"] .bento-card:hover {
+    transform: translateY(-4px);
+    box-shadow:
+        0 8px 25px rgba(0, 0, 0, 0.4),
+        0 4px 10px rgba(0, 0, 0, 0.3);
+    border-color: rgba(100, 116, 139, 0.5);
+}
+
+[data-theme="dark"] .bento-card .card-label {
+    color: #94a3b8;
+}
+
+[data-theme="dark"] .phase-name {
+    color: #f1f5f9;
+}
+
+[data-theme="dark"] .phase-name.uptrend {
+    color: #4ade80;
+}
+
+[data-theme="dark"] .phase-name.downtrend {
+    color: #f87171;
+}
+
+[data-theme="dark"] .phase-name.ranging {
+    color: #fbbf24;
+}
+
+[data-theme="dark"] .phase-confidence {
+    background: rgba(148, 163, 184, 0.15);
+}
+
+[data-theme="dark"] .confidence-label {
+    color: #94a3b8;
+}
+
+[data-theme="dark"] .confidence-value {
+    color: #f1f5f9;
+}
+
+[data-theme="dark"] .bias-headline {
+    color: #f1f5f9;
+}
+
+[data-theme="dark"] .bias-headline.bullish {
+    color: #4ade80;
+}
+
+[data-theme="dark"] .bias-headline.bearish {
+    color: #f87171;
+}
+
+[data-theme="dark"] .bias-headline.weak {
+    color: #fbbf24;
+}
+
+[data-theme="dark"] .bias-description {
+    color: #94a3b8;
+    background: rgba(148, 163, 184, 0.1);
+}
+
+[data-theme="dark"] .card-accent-bar {
+    opacity: 0.8;
+}
+
+[data-theme="dark"] .card-sparkline {
+    background: linear-gradient(90deg,
+            rgba(99, 102, 241, 0.15) 0%,
+            rgba(139, 92, 246, 0.25) 50%,
+            rgba(99, 102, 241, 0.15) 100%);
+}
+
+[data-theme="dark"] .phase-card .card-direction {
+    color: #e2e8f0;
+}
+
+[data-theme="dark"] .confidence-bar {
+    background: #334155;
+}
+
+[data-theme="dark"] .bar-value {
+    color: #ffffff;
+}
+
+[data-theme="dark"] .direction-badge.bullish {
+    color: #4ade80;
+}
+
+[data-theme="dark"] .direction-badge.bearish {
+    color: #f87171;
+}
+
+[data-theme="dark"] .direction-badge.neutral {
+    color: #94a3b8;
+}
+
+[data-theme="dark"] .structure-line-chart {
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.6) 100%);
+    border: none;
+}
+
+[data-theme="dark"] .swing-type.high {
+    color: #4ade80;
+    background: rgba(74, 222, 128, 0.15);
+}
+
+[data-theme="dark"] .swing-type.low {
+    color: #f87171;
+    background: rgba(248, 113, 113, 0.15);
+}
+
+[data-theme="dark"] .swing-price {
+    color: #cbd5e1;
+    background: rgba(148, 163, 184, 0.1);
+}
+
+[data-theme="dark"] .event-type-large.bullish {
+    color: #4ade80;
+    background: rgba(74, 222, 128, 0.15);
+}
+
+[data-theme="dark"] .event-type-large.bearish {
+    color: #f87171;
+    background: rgba(248, 113, 113, 0.15);
+}
+
+[data-theme="dark"] .event-direction {
+    background: rgba(148, 163, 184, 0.1);
+}
+
+[data-theme="dark"] .event-direction.bullish {
+    color: #4ade80;
+}
+
+[data-theme="dark"] .event-direction.bearish {
+    color: #f87171;
+}
+
+[data-theme="dark"] .event-price {
+    color: #cbd5e1;
+}
+
+/* Dark theme - Levels card */
+[data-theme="dark"] .bento-card.levels-card {
+    background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%);
+}
+
+[data-theme="dark"] .level-item:hover {
+    background: rgba(148, 163, 184, 0.1);
+}
+
+[data-theme="dark"] .level-label {
+    color: #94a3b8;
+}
+
+[data-theme="dark"] .level-value {
+    color: #f1f5f9;
+}
+
+[data-theme="dark"] .level-indicator {
+    color: inherit;
+}
+
+[data-theme="dark"] .bullish-level .level-indicator {
+    color: #4ade80;
+    background: rgba(74, 222, 128, 0.2);
+}
+
+[data-theme="dark"] .bearish-level .level-indicator {
+    color: #f87171;
+    background: rgba(248, 113, 113, 0.2);
+}
+
+[data-theme="dark"] .level-divider {
+    background: linear-gradient(90deg, transparent, rgba(71, 85, 105, 0.5), transparent);
+}
+
+/* Dark theme - Card state backgrounds */
+[data-theme="dark"] .bento-card.phase-card.uptrend {
+    background: linear-gradient(145deg, rgba(74, 222, 128, 0.15) 0%, rgba(22, 163, 74, 0.08) 100%);
+    border-color: rgba(74, 222, 128, 0.3);
+}
+
+[data-theme="dark"] .bento-card.phase-card.downtrend {
+    background: linear-gradient(145deg, rgba(248, 113, 113, 0.15) 0%, rgba(220, 38, 38, 0.08) 100%);
+    border-color: rgba(248, 113, 113, 0.3);
+}
+
+[data-theme="dark"] .bento-card.phase-card.ranging {
+    background: linear-gradient(145deg, rgba(251, 191, 36, 0.15) 0%, rgba(217, 119, 6, 0.08) 100%);
+    border-color: rgba(251, 191, 36, 0.3);
+}
+
+[data-theme="dark"] .bento-card.bias-card.bullish {
+    background: linear-gradient(145deg, rgba(74, 222, 128, 0.15) 0%, rgba(22, 163, 74, 0.06) 100%);
+    border-color: rgba(74, 222, 128, 0.3);
+}
+
+[data-theme="dark"] .bento-card.bias-card.bearish {
+    background: linear-gradient(145deg, rgba(248, 113, 113, 0.15) 0%, rgba(220, 38, 38, 0.06) 100%);
+    border-color: rgba(248, 113, 113, 0.3);
+}
+
+[data-theme="dark"] .bento-card.event-card {
+    background: linear-gradient(145deg, #1e293b 0%, rgba(251, 191, 36, 0.05) 100%);
+}
+
+[data-theme="dark"] .bento-card.event-card.bullish {
+    background: linear-gradient(145deg, rgba(74, 222, 128, 0.12) 0%, rgba(22, 163, 74, 0.04) 100%);
+    border-color: rgba(74, 222, 128, 0.3);
+}
+
+[data-theme="dark"] .bento-card.event-card.bearish {
+    background: linear-gradient(145deg, rgba(248, 113, 113, 0.12) 0%, rgba(220, 38, 38, 0.04) 100%);
+    border-color: rgba(248, 113, 113, 0.3);
+}
+
+[data-theme="dark"] .bento-card.swing-card.high {
+    background: linear-gradient(145deg, rgba(74, 222, 128, 0.15) 0%, rgba(22, 163, 74, 0.06) 100%);
+    border-color: rgba(74, 222, 128, 0.3);
+}
+
+[data-theme="dark"] .bento-card.swing-card.low {
+    background: linear-gradient(145deg, rgba(248, 113, 113, 0.15) 0%, rgba(220, 38, 38, 0.06) 100%);
+    border-color: rgba(248, 113, 113, 0.3);
+}
+
+/* Dark theme - Sparkline SVG colors */
+[data-theme="dark"] .phase-sparkline-svg .sparkline-line.uptrend {
+    stroke: #4ade80;
+}
+
+[data-theme="dark"] .phase-sparkline-svg .sparkline-line.downtrend {
+    stroke: #f87171;
+}
+
+[data-theme="dark"] .phase-sparkline-svg .sparkline-line.ranging {
+    stroke: #fbbf24;
+}
+
+[data-theme="dark"] .event-sparkline-svg .sparkline-line.bos-bullish,
+[data-theme="dark"] .event-sparkline-svg .sparkline-line.choch-bullish {
+    stroke: #4ade80;
+}
+
+[data-theme="dark"] .event-sparkline-svg .sparkline-line.bos-bearish,
+[data-theme="dark"] .event-sparkline-svg .sparkline-line.choch-bearish {
+    stroke: #f87171;
+}
+
+[data-theme="dark"] .swing-sparkline-svg .sparkline-line.swing-high {
+    stroke: #4ade80;
+}
+
+[data-theme="dark"] .swing-sparkline-svg .sparkline-line.swing-low {
+    stroke: #f87171;
+}
+
+[data-theme="dark"] .swing-sparkline-svg .sparkline-point.swing-high {
+    fill: #4ade80;
+}
+
+[data-theme="dark"] .swing-sparkline-svg .sparkline-point.swing-low {
+    fill: #f87171;
+}
+
+[data-theme="dark"] .sparkline-level {
+    stroke: #64748b;
+}
+
+[data-theme="dark"] .market-analysis-panel {
+    background: var(--bg-primary);
+    border-top: 1px solid var(--border-color);
+}
+
+[data-theme="dark"] .analysis-loading {
+    background: var(--bg-primary);
+}
+
+[data-theme="dark"] .analysis-loading .spinner {
+    border: 2px solid var(--border-color);
+    border-top-color: var(--text-muted);
+}
+
+/* ============================================
+   SESSION CONTEXT BENTO CARD
+   ============================================ */
+
+.session-icon {
+    background: linear-gradient(135deg, #06b6d4 0%, #0284c7 100%);
+    box-shadow: 0 2px 8px rgba(6, 182, 212, 0.3);
+}
+
+.session-icon .card-icon {
+    stroke: white;
+}
+
+.bento-card.session-card {
+    grid-column: auto;
+}
+
+.bento-card.session-card::before {
+    background: linear-gradient(90deg, #06b6d4, #0284c7);
+}
+
+.session-card .card-main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    text-align: center;
+}
+
+.session-name {
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: #0284c7;
+    letter-spacing: -0.02em;
+}
+
+.session-countdown {
+    font-size: 0.65rem;
+    color: #64748b;
+    font-weight: 500;
+}
+
+/* Session active states */
+.bento-card.session-card.asia {
+    background: linear-gradient(145deg, rgba(236, 72, 153, 0.1) 0%, rgba(244, 114, 182, 0.05) 100%);
+    border-color: rgba(236, 72, 153, 0.3);
+}
+
+.bento-card.session-card.asia .session-name {
+    color: #db2777;
+}
+
+.bento-card.session-card.london {
+    background: linear-gradient(145deg, rgba(59, 130, 246, 0.1) 0%, rgba(96, 165, 250, 0.05) 100%);
+    border-color: rgba(59, 130, 246, 0.3);
+}
+
+.bento-card.session-card.london .session-name {
+    color: #2563eb;
+}
+
+.bento-card.session-card.new-york {
+    background: linear-gradient(145deg, rgba(34, 197, 94, 0.1) 0%, rgba(74, 222, 128, 0.05) 100%);
+    border-color: rgba(34, 197, 94, 0.3);
+}
+
+.bento-card.session-card.new-york .session-name {
+    color: #16a34a;
+}
+
+/* ============================================
+   MTF CONFLUENCE BENTO CARD
+   ============================================ */
+
+.mtf-icon {
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+    box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
+}
+
+.mtf-icon .card-icon {
+    stroke: white;
+}
+
+.bento-card.mtf-card {
+    grid-column: auto;
+}
+
+.bento-card.mtf-card::before {
+    background: linear-gradient(90deg, #8b5cf6, #7c3aed);
+}
+
+.mtf-main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.mtf-indicators {
+    display: flex;
+    gap: 4px;
+    justify-content: center;
+}
+
+.mtf-tf {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    font-size: 0.55rem;
+    font-weight: 700;
+    border-radius: 4px;
+    background: rgba(100, 116, 139, 0.1);
+    color: #64748b;
+}
+
+.mtf-tf.bullish {
+    background: rgba(34, 197, 94, 0.15);
+    color: #16a34a;
+}
+
+.mtf-tf.bearish {
+    background: rgba(239, 68, 68, 0.15);
+    color: #dc2626;
+}
+
+.mtf-strength {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #8b5cf6;
+}
+
+/* MTF confluence strength colors */
+.mtf-strength.strong-bullish {
+    color: #16a34a;
+}
+
+.mtf-strength.strong-bearish {
+    color: #dc2626;
+}
+
+.mtf-strength.moderate {
+    color: #d97706;
+}
+
+.mtf-strength.weak {
+    color: #64748b;
+}
+
+/* Bento grid for 5 cards */
+.bento-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+@media (max-width: 1200px) {
+    .bento-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 900px) {
+    .bento-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+/* ============================================
+   DARK THEME STYLES
+   ============================================ */
+
+/* Bento Grid Dark Theme */
+[data-theme="dark"] .bento-grid {
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+}
+
+/* Bento Card Dark Theme */
+[data-theme="dark"] .bento-card {
+    background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%);
+    border-color: rgba(71, 85, 105, 0.5);
+    box-shadow:
+        0 1px 3px rgba(0, 0, 0, 0.2),
+        0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="dark"] .bento-card:hover {
+    border-color: rgba(100, 116, 139, 0.6);
+    box-shadow:
+        0 8px 25px rgba(0, 0, 0, 0.3),
+        0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Card Labels */
+[data-theme="dark"] .bento-card .card-label {
+    color: #94a3b8;
+}
+
+/* Phase Card Dark Theme */
+[data-theme="dark"] .phase-name {
+    color: #f1f5f9;
+}
+
+[data-theme="dark"] .phase-name.uptrend {
+    color: #4ade80;
+}
+
+[data-theme="dark"] .phase-name.downtrend {
+    color: #f87171;
+}
+
+[data-theme="dark"] .phase-name.ranging {
+    color: #fbbf24;
+}
+
+[data-theme="dark"] .phase-confidence {
+    background: rgba(71, 85, 105, 0.4);
+}
+
+[data-theme="dark"] .confidence-label {
+    color: #94a3b8;
+}
+
+[data-theme="dark"] .confidence-value {
+    color: #f1f5f9;
+}
+
+/* Bias Card Dark Theme */
+[data-theme="dark"] .bias-headline {
+    color: #f1f5f9;
+}
+
+[data-theme="dark"] .bias-headline.bullish {
+    color: #4ade80;
+}
+
+[data-theme="dark"] .bias-headline.bearish {
+    color: #f87171;
+}
+
+[data-theme="dark"] .bias-headline.weak {
+    color: #fbbf24;
+}
+
+[data-theme="dark"] .bias-headline.neutral {
+    color: #94a3b8;
+}
+
+[data-theme="dark"] .bias-description {
+    color: #94a3b8;
+    background: rgba(71, 85, 105, 0.3);
+}
+
+/* Levels Card Dark Theme */
+[data-theme="dark"] .level-label {
+    color: #94a3b8;
+}
+
+[data-theme="dark"] .level-value {
+    color: #f1f5f9;
+}
+
+[data-theme="dark"] .level-divider {
+    background: rgba(71, 85, 105, 0.5);
+}
+
+[data-theme="dark"] .bullish-level .level-indicator {
+    color: #4ade80;
+}
+
+[data-theme="dark"] .bearish-level .level-indicator {
+    color: #f87171;
+}
+
+/* Session Card Dark Theme */
+[data-theme="dark"] .session-name {
+    color: #38bdf8;
+}
+
+[data-theme="dark"] .session-countdown {
+    color: #94a3b8;
+}
+
+[data-theme="dark"] .bento-card.session-card.asia {
+    background: linear-gradient(145deg, rgba(236, 72, 153, 0.15) 0%, rgba(236, 72, 153, 0.08) 100%);
+    border-color: rgba(236, 72, 153, 0.4);
+}
+
+[data-theme="dark"] .bento-card.session-card.asia .session-name {
+    color: #f472b6;
+}
+
+[data-theme="dark"] .bento-card.session-card.london {
+    background: linear-gradient(145deg, rgba(59, 130, 246, 0.15) 0%, rgba(59, 130, 246, 0.08) 100%);
+    border-color: rgba(59, 130, 246, 0.4);
+}
+
+[data-theme="dark"] .bento-card.session-card.london .session-name {
+    color: #60a5fa;
+}
+
+[data-theme="dark"] .bento-card.session-card.new-york {
+    background: linear-gradient(145deg, rgba(34, 197, 94, 0.15) 0%, rgba(34, 197, 94, 0.08) 100%);
+    border-color: rgba(34, 197, 94, 0.4);
+}
+
+[data-theme="dark"] .bento-card.session-card.new-york .session-name {
+    color: #4ade80;
+}
+
+/* MTF Card Dark Theme */
+[data-theme="dark"] .mtf-tf {
+    background: rgba(71, 85, 105, 0.4);
+    color: #94a3b8;
+}
+
+[data-theme="dark"] .mtf-tf.bullish {
+    background: rgba(34, 197, 94, 0.2);
+    color: #4ade80;
+}
+
+[data-theme="dark"] .mtf-tf.bearish {
+    background: rgba(239, 68, 68, 0.2);
+    color: #f87171;
+}
+
+[data-theme="dark"] .mtf-strength {
+    color: #a78bfa;
+}
+
+[data-theme="dark"] .mtf-strength.strong-bullish {
+    color: #4ade80;
+}
+
+[data-theme="dark"] .mtf-strength.strong-bearish {
+    color: #f87171;
+}
+
+[data-theme="dark"] .mtf-strength.moderate {
+    color: #fbbf24;
+}
+
+[data-theme="dark"] .mtf-strength.weak {
+    color: #94a3b8;
+}
+
+/* Analysis Header Dark Theme */
+[data-theme="dark"] .analysis-header {
+    background: #1e293b;
+    border-bottom-color: #334155;
+}
+
+[data-theme="dark"] .analysis-header h3 {
+    color: #f1f5f9;
+}
+
+[data-theme="dark"] .analysis-toggle {
+    background: #334155;
+}
+
+[data-theme="dark"] .toggle-btn {
+    color: #94a3b8;
+}
+
+[data-theme="dark"] .toggle-btn:hover {
+    color: #f1f5f9;
+}
+
+[data-theme="dark"] .toggle-btn.active {
+    background: #475569;
+    color: #f1f5f9;
+}
+
+[data-theme="dark"] .close-analysis-btn {
+    color: #94a3b8;
+}
+
+[data-theme="dark"] .close-analysis-btn:hover {
+    color: #f1f5f9;
+    background: #334155;
+}

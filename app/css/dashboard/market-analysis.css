@@ -1,0 +1,2206 @@
+/* Market Analysis Panel Styles - Compact Redesign */
+
+.market-analysis-panel {
+    /* Compact white card-style panel that sits under the chart */
+    background: #ffffff;
+    border-top: 1px solid #e5e7eb;
+    padding: 0.25rem 0.5rem;
+    margin-top: 0.5rem;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    box-shadow: 0 -1px 4px rgba(15, 23, 42, 0.06);
+    color: #111827;
+}
+
+.analysis-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.4rem 0.5rem;
+    border-bottom: 1px solid #e5e7eb;
+    background: #f9fafb;
+    gap: 1rem;
+}
+
+.analysis-header h3 {
+    margin: 0;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #111827;
+}
+
+/* General/Specific Toggle */
+.analysis-toggle {
+    display: flex;
+    gap: 0;
+    background: #e5e7eb;
+    border-radius: 6px;
+    padding: 2px;
+}
+
+.toggle-btn {
+    padding: 0.3rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: none;
+    background: transparent;
+    color: #6b7280;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.toggle-btn:hover {
+    color: #111827;
+}
+
+.toggle-btn.active {
+    background: #ffffff;
+    color: #0ea5e9;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.close-analysis-btn {
+    background: none;
+    border: none;
+    color: #6b7280;
+    font-size: 1.25rem;
+    cursor: pointer;
+    padding: 0;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: all 0.15s ease;
+}
+
+.close-analysis-btn:hover {
+    background: rgba(15, 23, 42, 0.05);
+    color: #111827;
+}
+
+.analysis-content {
+    padding: 0.5rem;
+    background: #ffffff;
+}
+
+/* Constrain general view content to fit its parent and allow scrolling if needed */
+.analysis-content.general-view {
+    box-sizing: border-box;
+    max-height: calc(100% - 56px);
+    overflow-y: auto;
+}
+
+/* Bento Grid Layout - 5-column layout */
+.bento-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.35rem;
+    animation: fadeIn 0.4s ease-out;
+}
+
+/* Top row: HTF Bias and TF Alignment (each takes 2 columns) */
+.htf-bias-card,
+.alignment-card {
+    grid-column: span 2;
+}
+
+/* Second row: Analysis cards take 1 column each */
+.overall-card,
+.current-card {
+    grid-column: span 1;
+}
+
+/* Adjust volume and volatility to fill the second row without spaces */
+.volume-card {
+    grid-column: 1 / span 3;
+}
+
+.volatility-card {
+    grid-column: 4 / span 2;
+}
+
+/* Make momentum and timeframes cards span full width when present */
+.momentum-card,
+.timeframes-card {
+    grid-column: 1 / -1;
+}
+
+/* Responsive: stack vertically on smaller screens */
+@media (max-width: 1200px) {
+    .bento-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .htf-bias-card,
+    .alignment-card,
+    .overall-card,
+    .current-card,
+    .volume-card,
+    .volatility-card {
+        grid-column: span 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .bento-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .htf-bias-card,
+    .alignment-card,
+    .overall-card,
+    .current-card,
+    .volume-card,
+    .volatility-card {
+        grid-column: span 1;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Bento Cards */
+.bento-card {
+    background: linear-gradient(135deg, #f9fafb 0%, #ffffff 100%);
+    border: none;
+    border-radius: 8px;
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+    animation: slideIn 0.4s ease-out;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.bento-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border-color: #0ea5e9;
+}
+
+/* Card Header */
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.card-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.card-label-emphasized {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: #374151;
+    letter-spacing: 1px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.card-tf {
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: #9ca3af;
+    background: #e5e7eb;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+}
+
+.card-status {
+    font-size: 0.6rem;
+    font-weight: 700;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+
+.card-status.high {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+}
+
+.card-status.normal {
+    background: rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+}
+
+.card-status.low {
+    background: rgba(148, 163, 184, 0.15);
+    color: #94a3b8;
+}
+
+/* Direction Display */
+.card-direction {
+    font-size: 1.1rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+
+.card-direction.bullish,
+#macroTrend:contains("Bullish"),
+#microTrend:contains("Bullish") {
+    color: #22c55e;
+}
+
+.card-direction.bearish,
+#macroTrend:contains("Bearish"),
+#microTrend:contains("Bearish") {
+    color: #ef4444;
+}
+
+.card-direction.neutral,
+#macroTrend:contains("Neutral"),
+#microTrend:contains("Neutral") {
+    color: #94a3b8;
+}
+
+/* Big Confidence Circles */
+.card-confidence-big {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.confidence-circle {
+    width: 64px;
+    height: 64px;
+}
+
+.confidence-circle svg {
+    width: 100%;
+    height: 100%;
+}
+
+.circle-bg {
+    fill: none;
+    stroke: #e5e7eb;
+    stroke-width: 3;
+}
+
+.circle-progress {
+    fill: none;
+    stroke: #0ea5e9;
+    stroke-width: 3;
+    stroke-linecap: round;
+    transform: rotate(-90deg);
+    transform-origin: 50% 50%;
+    transition: stroke-dasharray 0.8s ease, stroke 0.3s ease;
+    animation: drawCircle 1s ease-out;
+}
+
+@keyframes drawCircle {
+    from {
+        stroke-dasharray: 0, 100;
+    }
+}
+
+.circle-text {
+    font-size: 0.65rem;
+    font-weight: 800;
+    fill: #111827;
+    text-anchor: middle;
+}
+
+.confidence-label {
+    font-size: 0.6rem;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+/* Combined Card Layout */
+.combined-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.trend-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.trend-section .card-direction {
+    flex: 1;
+    text-align: left;
+    margin-bottom: 0;
+}
+
+.confidence-circle-small {
+    width: 48px;
+    height: 48px;
+}
+
+.confidence-circle-small svg {
+    width: 100%;
+    height: 100%;
+}
+
+.htf-section,
+.alignment-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.section-label {
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.confidence-bar-mini {
+    height: 6px;
+    background: #e5e7eb;
+    border-radius: 3px;
+    overflow: hidden;
+    position: relative;
+}
+
+.confidence-bar-mini .bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #0ea5e9 0%, #06b6d4 100%);
+    border-radius: 3px;
+    transition: width 0.8s ease;
+}
+
+.card-main {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.direction-badge,
+.alignment-badge {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.direction-badge.bullish,
+.alignment-badge.strong-alignment {
+    background: rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+}
+
+.direction-badge.bearish,
+.alignment-badge.conflicting-signals {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+}
+
+.direction-badge.neutral,
+.alignment-badge.mixed-signals {
+    background: rgba(148, 163, 184, 0.15);
+    color: #94a3b8;
+}
+
+.alignment-badge.moderate-alignment {
+    background: rgba(234, 179, 8, 0.15);
+    color: #eab308;
+}
+
+.card-value {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #111827;
+    text-align: right;
+}
+
+/* HTF & Alignment Content */
+.htf-content,
+.alignment-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.direction-badge-large,
+.alignment-badge-large {
+    font-size: 0.85rem;
+    font-weight: 800;
+    padding: 0.4rem 0.75rem;
+    border-radius: 6px;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+.direction-badge-large.bullish,
+.alignment-badge-large.strong-alignment {
+    background: rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+}
+
+.direction-badge-large.bearish,
+.alignment-badge-large.conflicting-signals {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+}
+
+.direction-badge-large.neutral,
+.alignment-badge-large.mixed-signals {
+    background: rgba(148, 163, 184, 0.15);
+    color: #94a3b8;
+}
+
+.alignment-badge-large.moderate-alignment {
+    background: rgba(234, 179, 8, 0.15);
+    color: #eab308;
+}
+
+/* Confidence Bar */
+.confidence-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    height: 24px;
+    background: #e5e7eb;
+    border-radius: 12px;
+    padding: 0 0.5rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.bar-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    background: linear-gradient(90deg, #0ea5e9, #3b82f6);
+    border-radius: 12px;
+    transition: width 0.8s ease;
+    animation: fillBar 1s ease-out;
+}
+
+@keyframes fillBar {
+    from {
+        width: 0%;
+    }
+}
+
+.bar-value {
+    position: relative;
+    z-index: 1;
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: #111827;
+    margin-left: auto;
+}
+
+/* Volume Indicator */
+.mini-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 40px;
+    margin: 0.5rem 0;
+}
+
+.volume-bar {
+    flex: 1;
+    background: #94a3b8;
+    border-radius: 2px 2px 0 0;
+    transition: all 0.3s ease;
+    animation: growBar 0.5s ease-out;
+}
+
+.volume-bar.high {
+    background: #ef4444;
+}
+
+.volume-bar.above-avg {
+    background: #22c55e;
+}
+
+@keyframes growBar {
+    from {
+        transform: scaleY(0);
+    }
+
+    to {
+        transform: scaleY(1);
+    }
+}
+
+/* Volatility Bars (same style as volume) */
+.volatility-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 40px;
+    margin: 0.5rem 0;
+}
+
+.volatility-bar {
+    flex: 1;
+    background: #94a3b8;
+    border-radius: 2px 2px 0 0;
+    transition: all 0.3s ease;
+    animation: growBar 0.5s ease-out;
+}
+
+.volatility-bar.high {
+    background: #ef4444;
+}
+
+.volatility-bar.above-avg {
+    background: #3b82f6;
+}
+
+/* Volatility Chart (legacy line chart support) */
+.volatility-chart {
+    height: 40px;
+    margin: 0.5rem 0;
+    position: relative;
+}
+
+.volatility-line {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.volatility-line svg {
+    width: 100%;
+    height: 100%;
+}
+
+.volatility-path {
+    fill: none;
+    stroke: #3b82f6;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    animation: drawLine 1s ease-out;
+}
+
+@keyframes drawLine {
+    from {
+        stroke-dasharray: 1000;
+        stroke-dashoffset: 1000;
+    }
+
+    to {
+        stroke-dasharray: 1000;
+        stroke-dashoffset: 0;
+    }
+}
+
+.volatility-area {
+    fill: rgba(59, 130, 246, 0.1);
+}
+
+/* Indicator Stats */
+.indicator-stats {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid #e5e7eb;
+}
+
+.stat-item {
+    font-size: 0.6rem;
+    color: #6b7280;
+}
+
+.stat-item strong {
+    color: #111827;
+    font-weight: 700;
+}
+
+/* Momentum Card (full width) */
+.momentum-card {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.65rem 0.85rem;
+    animation: pulse 2s ease-in-out infinite, slideIn 0.5s ease-out;
+}
+
+.momentum-card.bullish {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.12), rgba(34, 197, 94, 0.04));
+    border-color: #22c55e;
+    border-width: 2px;
+}
+
+.momentum-card.bearish {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.12), rgba(239, 68, 68, 0.04));
+    border-color: #ef4444;
+    border-width: 2px;
+}
+
+.momentum-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    flex: 1;
+}
+
+.momentum-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #111827;
+}
+
+.momentum-details {
+    font-size: 0.65rem;
+    color: #6b7280;
+}
+
+/* Timeframes Card */
+.timeframes-card .timeframes-compact {
+    padding: 0.25rem 0;
+}
+
+/* Mini Strength Charts */
+.strength-chart,
+.alignment-chart {
+    flex: 1;
+    height: 8px;
+    background: rgba(148, 163, 184, 0.2);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+}
+
+.strength-chart::after,
+.alignment-chart::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: var(--fill, 0%);
+    background: var(--color, #0ea5e9);
+    border-radius: 4px;
+    transition: width 0.6s ease, background 0.3s ease;
+    animation: fillChart 0.8s ease-out;
+}
+
+@keyframes fillChart {
+    from {
+        width: 0%;
+    }
+
+    to {
+        width: var(--fill, 0%);
+    }
+}
+
+/* Loading State */
+.analysis-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1.75rem 1rem;
+    gap: 1rem;
+}
+
+.analysis-loading .spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid rgba(148, 163, 184, 0.25);
+    border-top-color: #0ea5e9;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.analysis-loading p {
+    color: #6b7280;
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+/* Results */
+.analysis-results {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 0.5rem;
+}
+
+.analysis-section {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 0.9rem 1rem;
+}
+
+.analysis-section h4 {
+    margin: 0 0 1rem 0;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #111827;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* HTF Bias */
+.htf-bias .bias-indicator {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+}
+
+.bias-direction {
+    font-size: 1.25rem;
+    font-weight: 700;
+    padding: 0.25rem 0.75rem;
+    border-radius: 6px;
+    text-transform: uppercase;
+    min-width: 100px;
+    text-align: center;
+}
+
+.bias-direction.bullish {
+    background: rgba(34, 197, 94, 0.2);
+    color: #22c55e;
+}
+
+.bias-direction.bearish {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+}
+
+.bias-direction.neutral {
+    background: rgba(148, 163, 184, 0.2);
+    color: #94a3b8;
+}
+
+.bias-meter {
+    flex: 1;
+    height: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.bias-fill {
+    height: 100%;
+    transition: width 0.5s ease, background 0.3s ease;
+    border-radius: 6px;
+}
+
+.bias-confidence {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-secondary, #9ca3af);
+    min-width: 50px;
+    text-align: right;
+}
+
+.bias-message {
+    color: var(--text-secondary, #9ca3af);
+    font-size: 0.9rem;
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* Current TF */
+.current-tf .perspective-group {
+    margin-bottom: 0.75rem;
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 6px;
+    border-left: 3px solid #e5e7eb;
+}
+
+.current-tf .perspective-group:first-of-type {
+    border-left-color: #3b82f6;
+}
+
+.current-tf .perspective-group:nth-of-type(2) {
+    border-left-color: #14b8a6;
+}
+
+.perspective-label {
+    margin: 0 0 0.5rem 0;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.current-tf .tf-metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 0.75rem;
+}
+
+.metric {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.metric-label {
+    font-size: 0.75rem;
+    color: #9ca3af;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.metric-value {
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.metric-value.bullish {
+    color: #22c55e;
+}
+
+.metric-value.bearish {
+    color: #ef4444;
+}
+
+.metric-value.neutral {
+    color: #94a3b8;
+}
+
+/* Compact Momentum Alert */
+.momentum-alert {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0.5rem 0;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    border: 1.5px solid;
+    animation: pulse 2s ease-in-out infinite, slideIn 0.5s ease-out;
+}
+
+.momentum-alert.bullish {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.12), rgba(34, 197, 94, 0.04));
+    border-color: #22c55e;
+}
+
+.momentum-alert.bearish {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.12), rgba(239, 68, 68, 0.04));
+    border-color: #ef4444;
+}
+
+.momentum-icon {
+    font-size: 1.2rem;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+}
+
+.momentum-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.momentum-text strong {
+    font-size: 0.75rem;
+    color: #111827;
+    font-weight: 600;
+}
+
+.momentum-text small {
+    font-size: 0.65rem;
+    color: #6b7280;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.92;
+        transform: scale(1.015);
+    }
+}
+
+/* Compact Timeframes Summary */
+.timeframes-compact {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    padding: 0.5rem 0;
+    animation: fadeIn 0.5s ease-out 0.2s both;
+}
+
+.tf-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 0.75rem;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border: 1.5px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 0.7rem;
+    transition: all 0.25s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+    cursor: pointer;
+}
+
+.tf-badge:hover {
+    border-color: #0ea5e9;
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 4px 8px rgba(14, 165, 233, 0.15);
+}
+
+.tf-badge .tf-name {
+    font-weight: 700;
+    color: #374151;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.tf-badge .tf-trend {
+    font-weight: 800;
+    font-size: 0.75rem;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.tf-badge .tf-trend.bullish {
+    color: #22c55e;
+}
+
+.tf-badge .tf-trend.bearish {
+    color: #ef4444;
+}
+
+.tf-badge .tf-trend.neutral {
+    color: #94a3b8;
+}
+
+.tf-badge.current {
+    background: linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%);
+    border-color: #0ea5e9;
+    border-width: 2px;
+    box-shadow: 0 4px 10px rgba(14, 165, 233, 0.2);
+    transform: scale(1.05);
+}
+
+/* Specific View Placeholder */
+.coming-soon {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: #6b7280;
+}
+
+.coming-soon h3 {
+    font-size: 1rem;
+    margin: 0 0 0.5rem 0;
+    color: #111827;
+}
+
+.coming-soon p {
+    font-size: 0.85rem;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.tf-counts {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid #e5e7eb;
+    font-size: 0.8rem;
+    color: #6b7280;
+}
+
+.tf-counts strong {
+    color: #111827;
+    font-weight: 600;
+}
+
+.tf-data {
+    display: none;
+}
+
+/* LTF Confirmation */
+.ltf-confirmation .confirmation-status {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 6px;
+}
+
+.status-icon {
+    font-size: 1.5rem;
+}
+
+.status-text {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.status-text.confirmed {
+    color: #22c55e;
+}
+
+.status-text.conflicting {
+    color: #ef4444;
+}
+
+.confirmation-message {
+    color: var(--text-secondary, #9ca3af);
+    font-size: 0.9rem;
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* Timeframe Alignment */
+.tf-alignment .alignment-status {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.alignment-label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    white-space: nowrap;
+}
+
+.alignment-label.strong-alignment {
+    background: rgba(34, 197, 94, 0.2);
+    color: #22c55e;
+}
+
+.alignment-label.moderate-alignment {
+    background: rgba(234, 179, 8, 0.2);
+    color: #eab308;
+}
+
+.alignment-label.mixed-signals {
+    background: rgba(59, 130, 246, 0.2);
+    color: #3b82f6;
+}
+
+.alignment-label.conflicting-signals {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+}
+
+.alignment-meter {
+    flex: 1;
+    height: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.alignment-fill {
+    height: 100%;
+    transition: width 0.5s ease, background 0.3s ease;
+    border-radius: 6px;
+}
+
+.alignment-score {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-secondary, #9ca3af);
+    min-width: 50px;
+    text-align: right;
+}
+
+/* Direction Weights */
+.direction-weights {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.weight-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.weight-direction {
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    min-width: 80px;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.weight-direction.bullish {
+    background: rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+}
+
+.weight-direction.bearish {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+}
+
+.weight-direction.neutral {
+    background: rgba(148, 163, 184, 0.15);
+    color: #94a3b8;
+}
+
+.weight-bar {
+    flex: 1;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.weight-fill {
+    height: 100%;
+    transition: width 0.5s ease;
+    border-radius: 4px;
+}
+
+.weight-value {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-secondary, #9ca3af);
+    min-width: 45px;
+    text-align: right;
+}
+
+/* All Timeframes Table */
+.all-timeframes {
+    grid-column: 1 / -1;
+}
+
+.tf-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.tf-table thead {
+    background: rgba(255, 255, 255, 0.03);
+    border-bottom: 2px solid var(--border-color, #2d3142);
+}
+
+.tf-table th {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-secondary, #9ca3af);
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+}
+
+.tf-table td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.tf-table tbody tr {
+    transition: background 0.2s;
+}
+
+.tf-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.tf-table tbody tr.current-tf-row {
+    background: rgba(14, 165, 233, 0.1);
+    border-left: 3px solid var(--primary, #0ea5e9);
+}
+
+.tf-name {
+    font-weight: 600;
+    color: var(--text-primary, #fff);
+}
+
+.trend-cell {
+    font-weight: 600;
+}
+
+.trend-cell.bullish {
+    color: #22c55e;
+}
+
+.trend-cell.bearish {
+    color: #ef4444;
+}
+
+.trend-cell.neutral {
+    color: #94a3b8;
+}
+
+/* Enhanced Timeframes Table with Circular Indicators */
+.timeframes-table-enhanced {
+    padding: 0.5rem 0;
+}
+
+.tf-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+}
+
+.tf-row {
+    display: grid;
+    grid-template-columns: 80px 1fr auto;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.65rem;
+    background: rgba(248, 250, 252, 0.5);
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    transition: all 0.2s ease;
+}
+
+.tf-row:hover {
+    background: rgba(241, 245, 249, 0.8);
+    border-color: #cbd5e1;
+    transform: translateX(2px);
+}
+
+.tf-row.current-tf-row {
+    border-width: 2px;
+}
+
+/* Bullish direction colors - green with increasing opacity */
+.tf-row.dir-slightly-bullish {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.08), rgba(34, 197, 94, 0.04));
+    border-color: rgba(34, 197, 94, 0.4);
+    box-shadow: 0 2px 8px rgba(34, 197, 94, 0.12);
+}
+
+.tf-row.dir-bullish {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(34, 197, 94, 0.08));
+    border-color: rgba(34, 197, 94, 0.6);
+    box-shadow: 0 2px 8px rgba(34, 197, 94, 0.2);
+}
+
+.tf-row.dir-strongly-bullish {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.22), rgba(34, 197, 94, 0.12));
+    border-color: rgba(34, 197, 94, 0.8);
+    box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);
+}
+
+/* Bearish direction colors - red with increasing opacity */
+.tf-row.dir-slightly-bearish {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.08), rgba(239, 68, 68, 0.04));
+    border-color: rgba(239, 68, 68, 0.4);
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.12);
+}
+
+.tf-row.dir-bearish {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(239, 68, 68, 0.08));
+    border-color: rgba(239, 68, 68, 0.6);
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.2);
+}
+
+.tf-row.dir-strongly-bearish {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.22), rgba(239, 68, 68, 0.12));
+    border-color: rgba(239, 68, 68, 0.8);
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+}
+
+/* Neutral - keep original blue styling */
+.tf-row.dir-neutral {
+    background: linear-gradient(135deg, rgba(14, 165, 233, 0.08), rgba(14, 165, 233, 0.04));
+    border-color: #0ea5e9;
+    box-shadow: 0 2px 8px rgba(14, 165, 233, 0.15);
+}
+
+/* Enhanced styling for current timeframe row */
+.tf-row.current-tf-row.dir-slightly-bullish {
+    border-width: 2px;
+    box-shadow: 0 2px 10px rgba(34, 197, 94, 0.18);
+}
+
+.tf-row.current-tf-row.dir-bullish {
+    border-width: 2px;
+    box-shadow: 0 2px 10px rgba(34, 197, 94, 0.25);
+}
+
+.tf-row.current-tf-row.dir-strongly-bullish {
+    border-width: 2px;
+    box-shadow: 0 2px 10px rgba(34, 197, 94, 0.35);
+}
+
+.tf-row.current-tf-row.dir-slightly-bearish {
+    border-width: 2px;
+    box-shadow: 0 2px 10px rgba(239, 68, 68, 0.18);
+}
+
+.tf-row.current-tf-row.dir-bearish {
+    border-width: 2px;
+    box-shadow: 0 2px 10px rgba(239, 68, 68, 0.25);
+}
+
+.tf-row.current-tf-row.dir-strongly-bearish {
+    border-width: 2px;
+    box-shadow: 0 2px 10px rgba(239, 68, 68, 0.35);
+}
+
+.tf-row.current-tf-row.dir-neutral {
+    border-width: 2px;
+    box-shadow: 0 2px 10px rgba(14, 165, 233, 0.2);
+}
+
+.tf-name-col {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.tf-label {
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: #111827;
+}
+
+.current-badge {
+    font-size: 0.5rem;
+    font-weight: 600;
+    color: #0ea5e9;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.tf-direction-col {
+    flex: 1;
+}
+
+.tf-strength-col {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Mini Confidence Circle for Timeframes Table */
+.mini-confidence-circle {
+    width: 32px;
+    height: 32px;
+}
+
+.mini-confidence-circle .circle-bg {
+    fill: none;
+    stroke: #e5e7eb;
+    stroke-width: 3.5;
+}
+
+.mini-confidence-circle .circle-progress {
+    fill: none;
+    stroke-width: 3.5;
+    stroke-linecap: round;
+    transform: rotate(-90deg);
+    transform-origin: 50% 50%;
+    transition: stroke-dasharray 0.8s ease;
+}
+
+.circle-text-mini {
+    font-size: 9px;
+    font-weight: 800;
+    fill: #111827;
+    text-anchor: middle;
+}
+
+/* Error Message */
+.error-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1rem;
+    gap: 1rem;
+    text-align: center;
+}
+
+.error-message svg {
+    color: var(--error, #ef4444);
+}
+
+.error-message h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: var(--text-primary, #fff);
+}
+
+.error-message p {
+    margin: 0;
+    color: var(--text-secondary, #9ca3af);
+    max-width: 400px;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-secondary, #9ca3af);
+    font-size: 0.95rem;
+}
+
+/* SMC-Specific Styles */
+.smc-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+}
+
+.smc-grid .macro-structure-card,
+.smc-grid .micro-structure-card {
+    grid-column: span 1;
+}
+
+.smc-grid .structure-breakdown-card {
+    grid-column: span 1;
+    grid-row: span 2;
+}
+
+.smc-grid .character-card {
+    grid-column: span 2;
+}
+
+.smc-grid .fvg-card {
+    grid-column: span 2;
+}
+
+/* Structure Stats */
+.structure-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+}
+
+.stat-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.stat-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #6b7280;
+    text-transform: uppercase;
+    min-width: 50px;
+}
+
+.stat-bar-container {
+    flex: 1;
+    height: 10px;
+    background: #e5e7eb;
+    border-radius: 5px;
+    overflow: hidden;
+    position: relative;
+}
+
+.stat-bar {
+    height: 100%;
+    border-radius: 5px;
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: slideBar 1s ease-out;
+}
+
+.stat-bar-bullish {
+    background: linear-gradient(90deg, #22c55e, #16a34a);
+}
+
+.stat-bar-bearish {
+    background: linear-gradient(90deg, #ef4444, #dc2626);
+}
+
+@keyframes slideBar {
+    from {
+        width: 0%;
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.stat-value {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: #111827;
+    min-width: 25px;
+    text-align: right;
+}
+
+/* Character Badge */
+.character-badge {
+    font-size: 0.95rem;
+    font-weight: 800;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 0.5rem;
+    animation: fadeInScale 0.5s ease-out;
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.character-badge.trending-bullish {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(34, 197, 94, 0.1));
+    color: #22c55e;
+    border: 2px solid #22c55e;
+}
+
+.character-badge.trending-bearish {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.1));
+    color: #ef4444;
+    border: 2px solid #ef4444;
+}
+
+.character-badge.ranging {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.1));
+    color: #3b82f6;
+    border: 2px solid #3b82f6;
+}
+
+.character-badge.choppy {
+    background: linear-gradient(135deg, rgba(234, 179, 8, 0.2), rgba(234, 179, 8, 0.1));
+    color: #eab308;
+    border: 2px solid #eab308;
+}
+
+.character-badge.neutral {
+    background: linear-gradient(135deg, rgba(148, 163, 184, 0.2), rgba(148, 163, 184, 0.1));
+    color: #94a3b8;
+    border: 2px solid #94a3b8;
+}
+
+.character-description {
+    font-size: 0.7rem;
+    color: #6b7280;
+    text-align: center;
+    line-height: 1.4;
+}
+
+/* FVG Stats */
+.fvg-stats {
+    display: flex;
+    justify-content: space-around;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.fvg-stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.fvg-stat-label {
+    font-size: 0.6rem;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+}
+
+.fvg-stat-value {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #111827;
+    animation: countUp 0.8s ease-out;
+}
+
+.fvg-stat-value.active {
+    color: #22c55e;
+}
+
+.fvg-stat-value.mitigated {
+    color: #94a3b8;
+}
+
+@keyframes countUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fvg-chart {
+    height: 50px;
+    background: linear-gradient(to top, rgba(14, 165, 233, 0.05), transparent);
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Enhanced Animations */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.92;
+        transform: scale(1.015);
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -1000px 0;
+    }
+    100% {
+        background-position: 1000px 0;
+    }
+}
+
+.bento-card:hover .card-direction {
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .analysis-results {
+        grid-template-columns: 1fr;
+    }
+
+    .smc-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .smc-grid .character-card,
+    .smc-grid .fvg-card {
+        grid-column: span 2;
+    }
+}
+
+@media (max-width: 768px) {
+    .analysis-header {
+        padding: 0.75rem 1rem;
+        flex-wrap: wrap;
+    }
+
+    .analysis-header h3 {
+        font-size: 1rem;
+    }
+
+    .analysis-toggle {
+        order: 3;
+        width: 100%;
+        margin-top: 0.5rem;
+    }
+
+    .analysis-content {
+        padding: 1rem;
+    }
+
+    .analysis-section {
+        padding: 1rem;
+    }
+
+    .tf-data {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .smc-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .smc-grid .macro-structure-card,
+    .smc-grid .micro-structure-card,
+    .smc-grid .structure-breakdown-card,
+    .smc-grid .character-card,
+    .smc-grid .fvg-card {
+        grid-column: span 1;
+        grid-row: span 1;
+    }
+}
+/* ========================================
+   DUAL PANEL SPECIFIC CARD STYLES
+   ======================================== */
+
+/* Phase Card */
+.phase-card .card-main {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.confidence-bar {
+    position: relative;
+    width: 100%;
+    height: 8px;
+    background: #e5e7eb;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.bar-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    background: linear-gradient(90deg, #0ea5e9, #06b6d4);
+    transition: width 0.3s ease;
+    border-radius: 4px;
+}
+
+.bar-value {
+    position: absolute;
+    right: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #111827;
+}
+
+/* Direction Card */
+.direction-card .card-main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 60px;
+}
+
+.direction-badge {
+    font-size: 1.2rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    background: #f3f4f6;
+}
+
+.direction-badge.bullish {
+    color: #22c55e;
+    background: rgba(34, 197, 94, 0.1);
+}
+
+.direction-badge.bearish {
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.1);
+}
+
+/* Pattern Card */
+.pattern-card .card-main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 60px;
+}
+
+.pattern-text {
+    font-family: 'Monaco', 'Courier New', monospace;
+    font-size: 0.75rem;
+    color: #374151;
+    text-align: center;
+    word-break: break-all;
+    line-height: 1.4;
+}
+
+/* Swing Card */
+.swing-card .card-main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.swing-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+/* Event Card */
+.event-card .card-main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.event-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+/* Levels Card */
+.levels-card .card-main {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.level-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.level-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #6b7280;
+}
+
+.level-value {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #111827;
+}
+/* ============================================
+   WARNINGS VIEW - Detailed Warning Cards
+   ============================================ */
+
+.warnings-view {
+    padding: 16px;
+}
+
+.warnings-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Risk Summary Banner */
+.risk-summary {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.risk-summary.low {
+    background: linear-gradient(90deg, rgba(34, 197, 94, 0.1) 0%, rgba(34, 197, 94, 0.05) 100%);
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    color: #15803d;
+}
+
+.risk-summary.elevated {
+    background: linear-gradient(90deg, rgba(245, 158, 11, 0.1) 0%, rgba(245, 158, 11, 0.05) 100%);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    color: #b45309;
+}
+
+.risk-summary.high {
+    background: linear-gradient(90deg, rgba(239, 68, 68, 0.1) 0%, rgba(239, 68, 68, 0.05) 100%);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #dc2626;
+}
+
+.risk-icon {
+    font-size: 16px;
+}
+
+.risk-text {
+    flex: 1;
+}
+
+/* Warning Filters */
+.warning-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.filter-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    font-size: 11px;
+    font-weight: 600;
+    border: 1px solid #e5e7eb;
+    background: #ffffff;
+    color: #6b7280;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.filter-btn:hover {
+    border-color: #d1d5db;
+    background: #f9fafb;
+}
+
+.filter-btn.active {
+    border-color: #3b82f6;
+    background: rgba(59, 130, 246, 0.1);
+    color: #2563eb;
+}
+
+.filter-label {
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.filter-count {
+    background: #e5e7eb;
+    color: #6b7280;
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 10px;
+    min-width: 18px;
+    text-align: center;
+}
+
+.filter-btn.active .filter-count {
+    background: #3b82f6;
+    color: white;
+}
+
+/* Warning Cards Container */
+.warning-cards-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* Warning Detail Card */
+.warning-detail-card {
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+    background: #ffffff;
+}
+
+.warning-detail-card.critical {
+    border-color: #fecaca;
+    background: linear-gradient(135deg, #ffffff 0%, #fef2f2 100%);
+}
+
+.warning-detail-card.high {
+    border-color: #fed7aa;
+    background: linear-gradient(135deg, #ffffff 0%, #fff7ed 100%);
+}
+
+.warning-detail-card.notable {
+    border-color: #fef08a;
+    background: linear-gradient(135deg, #ffffff 0%, #fefce8 100%);
+}
+
+.card-severity {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    background: rgba(0, 0, 0, 0.02);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.severity-badge {
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.severity-badge.critical { color: #dc2626; }
+.severity-badge.high { color: #ea580c; }
+.severity-badge.notable { color: #ca8a04; }
+
+.card-category {
+    font-size: 10px;
+    font-weight: 600;
+    color: #6b7280;
+    background: #e5e7eb;
+    padding: 2px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.card-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1f2937;
+    padding: 12px 14px 0;
+}
+
+.card-divider {
+    height: 1px;
+    background: #e5e7eb;
+    margin: 10px 14px;
+}
+
+.card-description {
+    font-size: 13px;
+    line-height: 1.5;
+    color: #4b5563;
+    padding: 0 14px;
+    margin-bottom: 12px;
+}
+
+.card-implication,
+.card-action {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 8px 14px;
+    margin: 0 14px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+}
+
+.card-implication {
+    background: rgba(59, 130, 246, 0.1);
+}
+
+.card-action {
+    background: rgba(5, 150, 105, 0.1);
+}
+
+.impl-icon,
+.action-icon {
+    flex-shrink: 0;
+}
+
+.impl-label,
+.action-label {
+    font-weight: 700;
+    color: #374151;
+    flex-shrink: 0;
+}
+
+.impl-text,
+.action-text {
+    color: #4b5563;
+}
+
+.card-buttons {
+    display: flex;
+    gap: 8px;
+    padding: 12px 14px;
+    border-top: 1px solid #e5e7eb;
+    background: rgba(0, 0, 0, 0.01);
+}
+
+.card-btn {
+    flex: 1;
+    padding: 8px 12px;
+    font-size: 11px;
+    font-weight: 600;
+    border: 1px solid #e5e7eb;
+    background: #ffffff;
+    color: #374151;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.card-btn:hover {
+    background: #f9fafb;
+    border-color: #d1d5db;
+}
+
+.card-btn.show-chart {
+    background: #3b82f6;
+    border-color: #3b82f6;
+    color: white;
+}
+
+.card-btn.show-chart:hover {
+    background: #2563eb;
+}
+
+/* Empty State */
+.warnings-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    text-align: center;
+}
+
+.empty-icon {
+    font-size: 32px;
+    margin-bottom: 12px;
+}
+
+.empty-text {
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 4px;
+}
+
+.empty-subtext {
+    font-size: 12px;
+    color: #9ca3af;
+}

@@ -1,0 +1,340 @@
+/**
+ * Drawing toolbar UI shell.
+ * Tool selection and manager menus are interactive; chart mutations are wired
+ * in a later implementation pass.
+ */
+
+.drawing-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex: 0 0 auto;
+}
+
+.drawing-tool-menu {
+    position: relative;
+}
+
+.drawing-tool-trigger {
+    display: inline-flex;
+    min-width: 34px;
+    min-height: 34px;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 6px 9px;
+    border: 1px solid var(--border-color);
+    border-radius: 7px;
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    cursor: pointer;
+    font: inherit;
+    font-size: 11px;
+    font-weight: 600;
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.drawing-tool-trigger:hover,
+.drawing-tool-trigger[aria-expanded="true"] {
+    border-color: var(--blue);
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.drawing-tool-trigger.has-selection {
+    color: var(--blue);
+}
+
+.drawing-tool-trigger svg {
+    width: 16px;
+    height: 16px;
+    flex: 0 0 16px;
+}
+
+.drawing-trigger-chevron {
+    width: 10px !important;
+    height: 10px !important;
+    opacity: 0.65;
+    transition: transform 0.15s ease;
+}
+
+.drawing-tool-trigger[aria-expanded="true"] .drawing-trigger-chevron {
+    transform: rotate(180deg);
+}
+
+.drawing-text-trigger {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.drawing-count {
+    display: inline-grid;
+    min-width: 17px;
+    height: 17px;
+    place-items: center;
+    padding: 0 4px;
+    border-radius: 999px;
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+}
+
+.drawing-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    z-index: 1400;
+    width: 226px;
+    padding: 7px;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    background: var(--bg-primary);
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.28);
+}
+
+.drawing-menu[hidden] {
+    display: none;
+}
+
+.drawing-manager-menu {
+    right: 0;
+    left: auto;
+    width: 304px;
+    padding: 0;
+    overflow: hidden;
+}
+
+.drawing-menu-label {
+    display: block;
+    padding: 5px 8px 7px;
+    color: var(--text-tertiary);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.drawing-menu-item {
+    display: grid;
+    width: 100%;
+    grid-template-columns: 24px 1fr auto;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 9px;
+    border: 0;
+    border-radius: 7px;
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font: inherit;
+    font-size: 12px;
+    text-align: left;
+}
+
+.drawing-menu-item:hover,
+.drawing-menu-item[aria-checked="true"] {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.drawing-menu-item[aria-checked="true"]::after {
+    content: '✓';
+    color: var(--blue);
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.drawing-item-icon {
+    display: grid;
+    width: 24px;
+    height: 24px;
+    place-items: center;
+    border-radius: 6px;
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    font-family: 'JetBrains Mono', Consolas, monospace;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.drawing-manager-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 13px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.drawing-manager-heading {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.drawing-manager-title {
+    color: var(--text-primary);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.drawing-manager-subtitle {
+    color: var(--text-tertiary);
+    font-size: 9px;
+}
+
+.drawing-manager-actions {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    padding: 8px;
+    border-bottom: 1px solid var(--border-color);
+    background: var(--bg-secondary);
+}
+
+.drawing-manager-action {
+    min-height: 30px;
+    padding: 5px 7px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--bg-primary);
+    color: var(--text-secondary);
+    cursor: pointer;
+    font: inherit;
+    font-size: 9px;
+    font-weight: 600;
+}
+
+.drawing-manager-action.danger {
+    color: var(--red);
+}
+
+.drawing-manager-action:disabled {
+    cursor: not-allowed;
+    opacity: 0.42;
+}
+
+.drawing-manager-list {
+    max-height: 248px;
+    margin: 0;
+    padding: 7px;
+    overflow-y: auto;
+    list-style: none;
+}
+
+.drawing-manager-list[hidden] {
+    display: none;
+}
+
+.drawing-manager-empty {
+    display: grid;
+    min-height: 128px;
+    place-items: center;
+    align-content: center;
+    gap: 6px;
+    padding: 20px;
+    color: var(--text-tertiary);
+    text-align: center;
+}
+
+.drawing-manager-empty svg {
+    width: 26px;
+    height: 26px;
+    opacity: 0.7;
+}
+
+.drawing-manager-empty strong {
+    color: var(--text-secondary);
+    font-size: 11px;
+}
+
+.drawing-manager-empty span {
+    max-width: 220px;
+    font-size: 9px;
+    line-height: 1.4;
+}
+
+.drawing-manager-row {
+    display: grid;
+    grid-template-columns: 28px minmax(0, 1fr) 28px;
+    align-items: center;
+    gap: 7px;
+    padding: 7px;
+    border-radius: 7px;
+}
+
+.drawing-manager-row:hover {
+    background: var(--bg-hover);
+}
+
+.drawing-row-button {
+    display: grid;
+    width: 28px;
+    height: 28px;
+    place-items: center;
+    padding: 0;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--text-tertiary);
+    cursor: pointer;
+}
+
+.drawing-row-button:hover {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+.drawing-row-button.delete:hover {
+    color: var(--red);
+}
+
+.drawing-row-button svg {
+    width: 14px;
+    height: 14px;
+}
+
+.drawing-row-copy {
+    min-width: 0;
+}
+
+.drawing-row-name,
+.drawing-row-meta {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.drawing-row-name {
+    color: var(--text-primary);
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.drawing-row-meta {
+    margin-top: 2px;
+    color: var(--text-tertiary);
+    font-size: 9px;
+}
+
+@media (max-width: 1400px) {
+    .drawing-trigger-label {
+        display: none;
+    }
+
+    .drawing-tool-trigger {
+        padding-inline: 8px;
+    }
+}
+
+@media (max-width: 600px) {
+    .drawing-manager-menu {
+        right: auto;
+        left: 0;
+        width: min(304px, calc(100vw - 24px));
+    }
+}

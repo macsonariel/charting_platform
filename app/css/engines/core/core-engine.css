@@ -1,0 +1,70 @@
+/**
+ * Core Engine Styles
+ * Styling for Core engine chart overlays
+ */
+
+/* Swing Points */
+.core-swing {
+    transition: opacity 0.2s ease;
+}
+
+.core-swing:hover {
+    opacity: 1 !important;
+    cursor: pointer;
+}
+
+.core-swing-label {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    pointer-events: none;
+    text-shadow: 0 0 3px rgba(0, 0, 0, 0.7);
+}
+
+/* Structure Events */
+.core-structure {
+    transition: opacity 0.2s ease;
+}
+
+.core-bos {
+    stroke-linecap: round;
+}
+
+.core-choch {
+    stroke-linecap: round;
+}
+
+.core-structure-label {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    pointer-events: none;
+    text-shadow: 0 0 3px rgba(0, 0, 0, 0.7);
+}
+
+/* Protected Levels */
+.core-level {
+    transition: opacity 0.2s ease;
+}
+
+.core-level:hover {
+    opacity: 1 !important;
+}
+
+.core-level-label {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    pointer-events: none;
+    text-shadow: 0 0 3px rgba(0, 0, 0, 0.7);
+}
+
+/* Move Backgrounds */
+.core-move {
+    transition: opacity 0.3s ease;
+}
+
+/* Layer Groups */
+.core-engine-layer {
+    pointer-events: none;
+}
+
+.core-engine-layer * {
+    pointer-events: auto;
+}
+
+/* Hidden layers - controlled via JS display property */

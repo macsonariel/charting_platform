@@ -1,0 +1,225 @@
+/**
+ * TradingBuddy - Centralized Theme CSS
+ * Gray-based dark theme, clean light theme
+ * This file MUST be loaded before all other CSS files
+ */
+
+/* ===========================================
+   GLOBAL THEME VARIABLES - DARK MODE (Default)
+   =========================================== */
+:root,
+[data-theme="dark"] {
+    /* Background Scale (Pure Grays) */
+    --bg-primary: #121212;
+    --bg-secondary: #1a1a1a;
+    --bg-tertiary: #222222;
+    --bg-card: rgba(26, 26, 26, 0.95);
+    --bg-card-hover: rgba(38, 38, 38, 0.98);
+    --bg-elevated: rgba(45, 45, 45, 0.9);
+    --bg-input: rgba(255, 255, 255, 0.05);
+    --bg-surface: #1e1e1e;
+    --bg-overlay: rgba(0, 0, 0, 0.6);
+
+    /* Text Scale */
+    --text-primary: #f5f5f5;
+    --text-secondary: rgba(255, 255, 255, 0.7);
+    --text-muted: rgba(255, 255, 255, 0.45);
+    --text-disabled: rgba(255, 255, 255, 0.25);
+    --text-inverse: #171717;
+
+    /* Borders & Glass */
+    --border-color: rgba(255, 255, 255, 0.1);
+    --border-hover: rgba(255, 255, 255, 0.15);
+    --border-focus: rgba(168, 85, 247, 0.5);
+    --glass-blur: blur(20px);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-border-hover: rgba(255, 255, 255, 0.12);
+
+    /* Accent Colors */
+    --accent-primary: #a855f7;
+    --accent-primary-hover: #9333ea;
+    --accent-blue: #3b82f6;
+    --accent-blue-hover: #2563eb;
+    --accent-pink: #ec4899;
+    --accent-pink-hover: #db2777;
+    --accent-cyan: #06b6d4;
+    --accent-cyan-hover: #0891b2;
+    --accent-orange: #f97316;
+    --accent-orange-hover: #ea580c;
+
+    /* Semantic Colors */
+    --positive: #22c55e;
+    --positive-hover: #16a34a;
+    --positive-light: rgba(34, 197, 94, 0.15);
+    --positive-bg: rgba(34, 197, 94, 0.1);
+    --negative: #ef4444;
+    --negative-hover: #dc2626;
+    --negative-light: rgba(239, 68, 68, 0.15);
+    --negative-bg: rgba(239, 68, 68, 0.1);
+    --warning: #f59e0b;
+    --warning-hover: #d97706;
+    --warning-light: rgba(245, 158, 11, 0.15);
+    --warning-bg: rgba(245, 158, 11, 0.1);
+    --neutral: #737373;
+    --neutral-light: rgba(115, 115, 115, 0.15);
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, #a855f7 0%, #ec4899 50%, #3b82f6 100%);
+    --gradient-accent: linear-gradient(135deg, #a855f7 0%, #c084fc 100%);
+    --gradient-blue: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+    --gradient-pink: linear-gradient(135deg, #ec4899 0%, #f472b6 100%);
+    --gradient-cyan: linear-gradient(135deg, #06b6d4 0%, #22d3ee 100%);
+    --gradient-orange: linear-gradient(135deg, #f97316 0%, #fb923c 100%);
+    --gradient-positive: linear-gradient(135deg, #22c55e 0%, #4ade80 100%);
+    --gradient-negative: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
+
+    /* Shadows */
+    --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.2);
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.5);
+    --shadow-xl: 0 16px 60px rgba(0, 0, 0, 0.6);
+    --shadow-glow: 0 4px 20px rgba(168, 85, 247, 0.25);
+    --shadow-glow-blue: 0 4px 20px rgba(59, 130, 246, 0.25);
+    --shadow-glow-pink: 0 4px 20px rgba(236, 72, 153, 0.25);
+
+    /* Border Radius */
+    --radius-xs: 4px;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+    --radius-2xl: 24px;
+    --radius-full: 9999px;
+
+    /* Spacing (for reference) */
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 12px;
+    --spacing-lg: 16px;
+    --spacing-xl: 24px;
+    --spacing-2xl: 32px;
+
+    /* Transitions */
+    --transition-fast: 0.15s ease;
+    --transition-normal: 0.2s ease;
+    --transition-slow: 0.3s ease;
+    --transition-spring: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ===========================================
+   GLOBAL THEME VARIABLES - LIGHT MODE
+   =========================================== */
+[data-theme="light"] {
+    /* Background Scale */
+    --bg-primary: #fafafa;
+    --bg-secondary: #f5f5f5;
+    --bg-tertiary: #eeeeee;
+    --bg-card: rgba(255, 255, 255, 0.95);
+    --bg-card-hover: rgba(255, 255, 255, 1);
+    --bg-elevated: rgba(250, 250, 250, 0.95);
+    --bg-input: rgba(0, 0, 0, 0.04);
+    --bg-surface: #ffffff;
+    --bg-overlay: rgba(0, 0, 0, 0.4);
+
+    /* Text Scale */
+    --text-primary: #171717;
+    --text-secondary: rgba(23, 23, 23, 0.7);
+    --text-muted: rgba(23, 23, 23, 0.45);
+    --text-disabled: rgba(23, 23, 23, 0.25);
+    --text-inverse: #f5f5f5;
+
+    /* Borders & Glass */
+    --border-color: rgba(0, 0, 0, 0.08);
+    --border-hover: rgba(0, 0, 0, 0.12);
+    --border-focus: rgba(168, 85, 247, 0.4);
+    --glass-border: rgba(0, 0, 0, 0.06);
+    --glass-border-hover: rgba(0, 0, 0, 0.1);
+
+    /* Shadows - softer for light mode */
+    --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.12);
+    --shadow-xl: 0 16px 60px rgba(0, 0, 0, 0.16);
+    --shadow-glow: 0 4px 20px rgba(168, 85, 247, 0.15);
+    --shadow-glow-blue: 0 4px 20px rgba(59, 130, 246, 0.15);
+    --shadow-glow-pink: 0 4px 20px rgba(236, 72, 153, 0.15);
+
+    /* Semantic colors with slightly adjusted opacity for light backgrounds */
+    --positive-light: rgba(34, 197, 94, 0.12);
+    --positive-bg: rgba(34, 197, 94, 0.08);
+    --negative-light: rgba(239, 68, 68, 0.12);
+    --negative-bg: rgba(239, 68, 68, 0.08);
+    --warning-light: rgba(245, 158, 11, 0.12);
+    --warning-bg: rgba(245, 158, 11, 0.08);
+    --neutral-light: rgba(115, 115, 115, 0.12);
+}
+
+/* ===========================================
+   LEGACY VARIABLE ALIASES
+   For backward compatibility with existing CSS
+   =========================================== */
+:root,
+[data-theme="dark"],
+[data-theme="light"] {
+    /* Legacy --primary-* aliases used by dashboard styles */
+    --primary-blue: var(--accent-blue);
+    --primary-purple: var(--accent-primary);
+    --primary-pink: var(--accent-pink);
+    --bg-dark: var(--bg-secondary);
+    --bg-darker: var(--bg-surface);
+    --bg-hover: var(--bg-card-hover);
+    --gradient-purple: var(--gradient-accent);
+
+    /* Analysis Panel --ap-* aliases */
+    --ap-bg: var(--bg-primary);
+    --ap-bg-card: var(--bg-card);
+    --ap-bg-section: var(--bg-elevated);
+    --ap-border: var(--glass-border);
+    --ap-text-primary: var(--text-primary);
+    --ap-text-secondary: var(--text-secondary);
+    --ap-text-muted: var(--text-muted);
+    --ap-bullish: var(--positive);
+    --ap-bearish: var(--negative);
+    --ap-neutral: var(--neutral);
+    --ap-warning: var(--warning);
+    --ap-accent: var(--accent-blue);
+    --ap-radius: var(--radius-md);
+    --ap-radius-sm: var(--radius-sm);
+    --ap-shadow: var(--shadow-md);
+
+    /* Status/semantic aliases */
+    --success: var(--positive);
+    --error: var(--negative);
+    --info: var(--accent-blue);
+
+    /* Sidebar aliases */
+    --bg-sidebar: var(--bg-secondary);
+    --bg-navbar: var(--bg-tertiary);
+    --accent-teal: var(--accent-cyan);
+    --accent-gradient: linear-gradient(135deg, var(--accent-cyan) 0%, var(--accent-blue) 100%);
+
+    /* Chart-specific aliases (market-chart) */
+    --chart-bg: var(--bg-surface);
+    --grid-color: var(--border-color);
+    --crosshair-color: var(--text-muted);
+    --candle-up: #089981;
+    --candle-down: #f23645;
+    --candle-up-wick: #089981;
+    --candle-down-wick: #f23645;
+    --volume-up: rgba(8, 153, 129, 0.5);
+    --volume-down: rgba(242, 54, 69, 0.5);
+    --divider-color: var(--border-color);
+    --bg-active: var(--bg-tertiary);
+    --text-tertiary: var(--text-disabled);
+    --blue: var(--accent-blue);
+    --purple: var(--accent-primary);
+    --orange: var(--accent-orange);
+    --green: var(--positive);
+    --red: var(--negative);
+
+    /* Sidebar dimensions */
+    --sidebar-width: 320px;
+    --sidebar-mini-width: 60px;
+}

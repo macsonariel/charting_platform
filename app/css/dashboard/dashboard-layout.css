@@ -1,0 +1,72 @@
+/**
+ * Dashboard Layout Styles
+ * 
+ * Core layout styles for the dashboard.
+ * Migrated from dashboard index inline styles.
+ */
+
+/* Reset html and body to fill viewport without overflow */
+html,
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+/* Main container: flex row, fills viewport height */
+.main-container {
+    display: flex !important;
+    width: 100% !important;
+    height: 100vh;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+/* Main content wrapper: flex column, takes remaining space */
+.main-content-wrapper {
+    flex: 1 !important;
+    min-width: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+}
+
+/* Main content: fills parent, no overflow by default */
+#main-content {
+    flex: 1 !important;
+    padding: 5px !important;
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+/* Settings scrolls independently from the fixed chart layout. */
+#main-content[data-route="settings"] {
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Home keeps the chart constrained to the viewport. */
+#main-content[data-route="home"] {
+    overflow: hidden !important;
+}
+
+/* Generic container/content resets */
+.main-content,
+.container {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+}

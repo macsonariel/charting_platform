@@ -1,0 +1,263 @@
+/* ============================================
+   CHART INTERVAL BAR - Zoom Range & Timezone
+   ============================================ */
+
+.chart-interval-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 16px;
+    background: var(--bg-primary);
+    border-top: 1px solid var(--border-color);
+    border-radius: 0 0 8px 8px;
+    margin-top: -1px;
+    min-height: 44px;
+    gap: 16px;
+}
+
+/* ============================================
+   INTERVAL SELECTOR (Left Side)
+   ============================================ */
+
+.interval-selector {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--bg-secondary);
+    border-radius: 6px;
+    padding: 3px;
+    border: 1px solid var(--border-color);
+}
+
+.interval-btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+}
+
+.interval-btn:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.interval-btn.active {
+    background: var(--blue);
+    color: white;
+    font-weight: 600;
+    box-shadow: 0 2px 6px rgba(41, 98, 255, 0.3);
+}
+
+.interval-btn.active:hover {
+    background: #1e53e5;
+}
+
+/* Divider between interval buttons */
+.interval-divider {
+    width: 1px;
+    height: 20px;
+    background: var(--border-color);
+    margin: 0 2px;
+}
+
+/* ============================================
+   TIMEZONE SELECTOR (Right Side)
+   ============================================ */
+
+.timezone-selector {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.timezone-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.timezone-dropdown-wrapper {
+    position: relative;
+}
+
+/* Custom scrollable dropdown styling */
+.timezone-select {
+    padding: 6px 32px 6px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23787b86' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    min-width: 160px;
+    max-width: 180px;
+}
+
+/* Make native select dropdown scrollable with limited height */
+.timezone-select option {
+    padding: 8px 12px;
+    font-size: 12px;
+}
+
+.timezone-select:hover {
+    border-color: var(--blue);
+    background-color: var(--bg-hover);
+}
+
+.timezone-select:focus {
+    outline: none;
+    border-color: var(--blue);
+    box-shadow: 0 0 0 2px rgba(41, 98, 255, 0.15);
+}
+
+/* Override browser's default dropdown panel size */
+.timezone-select::-webkit-scrollbar {
+    width: 6px;
+}
+
+.timezone-select::-webkit-scrollbar-track {
+    background: var(--bg-tertiary);
+    border-radius: 3px;
+}
+
+.timezone-select::-webkit-scrollbar-thumb {
+    background: var(--text-tertiary);
+    border-radius: 3px;
+}
+
+.timezone-select::-webkit-scrollbar-thumb:hover {
+    background: var(--text-secondary);
+}
+
+/* Clock icon next to timezone */
+.timezone-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: var(--bg-secondary);
+    border-radius: 6px;
+    color: var(--text-secondary);
+}
+
+.timezone-icon svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* Current time display */
+.current-time-display {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-primary);
+    font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+    padding: 6px 10px;
+    background: var(--bg-tertiary);
+    border-radius: 6px;
+    min-width: 80px;
+    text-align: center;
+}
+
+/* ============================================
+   RESPONSIVE ADJUSTMENTS
+   ============================================ */
+
+@media (max-width: 900px) {
+    .chart-interval-bar {
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        gap: 8px;
+        padding: 7px 8px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scrollbar-width: thin;
+        overscroll-behavior-x: contain;
+    }
+
+    .chart-interval-bar::-webkit-scrollbar {
+        height: 4px;
+    }
+
+    .chart-interval-bar::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .chart-interval-bar::-webkit-scrollbar-thumb {
+        background: var(--border-color);
+        border-radius: 999px;
+    }
+
+    .interval-selector {
+        order: 1;
+        flex: 0 0 auto;
+        min-width: max-content;
+        justify-content: flex-start;
+    }
+
+    .timezone-selector {
+        order: 2;
+        flex: 0 0 auto;
+        justify-content: flex-start;
+    }
+
+    .interval-btn {
+        padding: 5px 8px;
+        font-size: 11px;
+    }
+}
+
+@media (max-width: 600px) {
+    .interval-btn {
+        padding: 4px 6px;
+        font-size: 10px;
+    }
+
+    .timezone-select {
+        min-width: 120px;
+        font-size: 11px;
+    }
+
+    .current-time-display {
+        display: none;
+    }
+}
+
+/* ============================================
+   DARK THEME ADJUSTMENTS
+   ============================================ */
+
+[data-theme="dark"] .chart-interval-bar {
+    background: var(--bg-primary);
+    border-top-color: var(--border-color);
+}
+
+[data-theme="dark"] .interval-selector {
+    background: var(--bg-tertiary);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .interval-btn:hover {
+    background: var(--bg-hover);
+}
+
+[data-theme="dark"] .timezone-select {
+    background: var(--bg-tertiary);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .timezone-select:hover {
+    background: var(--bg-hover);
+}

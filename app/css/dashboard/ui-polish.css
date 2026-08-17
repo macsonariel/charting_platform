@@ -1,0 +1,479 @@
+/**
+ * Dashboard UI polish
+ *
+ * Final, intentionally small overrides for the active chart workspace. These
+ * rules improve hierarchy and information density without changing chart or
+ * Core Engine behavior.
+ */
+
+:where(button, select, a, [tabindex]):focus-visible {
+    outline: 2px solid var(--blue);
+    outline-offset: 2px;
+}
+
+.container {
+    gap: 6px;
+}
+
+#main-content[data-route="home"] > .container {
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.container > header {
+    min-height: 52px;
+    padding: 6px 12px;
+    gap: 10px;
+    margin-bottom: 0;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    box-shadow: none;
+}
+
+.symbol-info {
+    gap: 10px;
+    padding: 4px 6px;
+    background: transparent;
+}
+
+.symbol-select,
+.current-price,
+.price-change,
+.qs-price,
+.ap-price {
+    font-variant-numeric: tabular-nums;
+}
+
+.current-price {
+    font-family: 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace;
+}
+
+.header-controls {
+    gap: 8px;
+}
+
+.header-controls-spacer {
+    min-width: 12px;
+}
+
+.control-group {
+    padding: 2px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--bg-secondary);
+}
+
+.control-group--primary {
+    padding: 2px;
+}
+
+.nav-right-chart {
+    gap: 6px !important;
+}
+
+.nav-right-chart .profile-icon,
+.nav-right-chart .nav-icon-btn {
+    border: 1px solid transparent;
+}
+
+.nav-right-chart .profile-icon:hover,
+.nav-right-chart .nav-icon-btn:hover {
+    border-color: var(--border-color);
+}
+
+.chart-wrapper {
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    box-shadow: none;
+    overflow: hidden;
+}
+
+.chart-interval-bar {
+    min-height: 40px;
+    padding: 6px 10px;
+}
+
+.interval-btn {
+    padding: 5px 9px;
+}
+
+/* Compact Core rail so the analytical tabs retain useful height. */
+.ap-panel {
+    grid-template-rows: auto auto auto auto minmax(0, 1fr) auto;
+    width: 296px;
+    max-width: 296px;
+    min-width: 272px;
+}
+
+.ap-header {
+    padding: 12px 14px 8px;
+    border-bottom: 1px solid var(--ap-border);
+}
+
+.ap-engine-select {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 6px;
+    text-align: left;
+}
+
+.ap-engine-dropdown {
+    padding: 0;
+    font-size: 11px;
+    color: var(--ap-text-primary);
+}
+
+.ap-engine-icon {
+    display: inline;
+    color: var(--ap-accent);
+}
+
+.ap-data-status {
+    max-width: 150px;
+    overflow: hidden;
+    text-align: right;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ap-gauge-wrap {
+    padding: 0;
+}
+
+.ap-speedometer {
+    max-width: 190px;
+}
+
+.ap-bias-display {
+    gap: 1px;
+    margin-top: 0;
+    padding: 4px 14px;
+    background: transparent;
+}
+
+.ap-bias-value {
+    font-size: 20px;
+}
+
+.ap-thesis {
+    gap: 9px;
+    padding: 10px 12px;
+    margin: 0 10px 8px;
+}
+
+.ap-thesis-icon {
+    display: grid;
+    width: 24px;
+    height: 24px;
+    place-items: center;
+    border-radius: 7px;
+    background: rgba(59, 130, 246, 0.14);
+    color: var(--ap-accent);
+    flex: 0 0 24px;
+}
+
+.ap-thesis-icon svg {
+    width: 14px;
+    height: 14px;
+}
+
+.ap-thesis-text {
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.ap-events {
+    gap: 6px;
+    padding: 4px 2px;
+    margin: 0 10px 8px;
+}
+
+.ap-event-chip {
+    padding: 4px 9px;
+    font-size: 10px;
+}
+
+.ap-session-context {
+    margin: 0 10px 8px;
+    padding: 9px 10px 10px;
+    border: 1px solid var(--ap-border);
+    border-radius: var(--ap-radius);
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(59, 130, 246, 0.025));
+}
+
+.ap-session-header,
+.ap-session-heading {
+    display: flex;
+    align-items: center;
+}
+
+.ap-session-header {
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 9px;
+}
+
+.ap-session-heading {
+    gap: 6px;
+    color: var(--ap-text-primary);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.ap-session-heading svg {
+    width: 14px;
+    height: 14px;
+    color: var(--ap-accent);
+}
+
+.ap-session-source {
+    padding: 3px 6px;
+    border-radius: 999px;
+    background: rgba(148, 163, 184, 0.12);
+    color: var(--ap-text-muted);
+    font-size: 8px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.ap-session-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+}
+
+.ap-session-item {
+    min-width: 0;
+    padding-left: 7px;
+    border-left: 2px solid rgba(59, 130, 246, 0.25);
+}
+
+.ap-session-label,
+.ap-session-value {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ap-session-label {
+    margin-bottom: 3px;
+    color: var(--ap-text-muted);
+    font-size: 8px;
+    text-transform: uppercase;
+}
+
+.ap-session-value {
+    color: var(--ap-text-secondary);
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.ap-tabs {
+    margin: 0 10px;
+}
+
+.ap-tab-nav {
+    margin-bottom: 8px;
+}
+
+.ap-tab-btn {
+    padding: 8px 10px;
+}
+
+.ap-section-header {
+    padding: 9px 12px;
+}
+
+.ap-section-body {
+    padding: 12px;
+}
+
+.ap-row {
+    padding: 6px 0;
+}
+
+.ap-footer {
+    padding: 9px 12px;
+}
+
+.ap-price {
+    font-size: 17px;
+}
+
+/* Quick Overview is a scan row, not a second full analysis panel. */
+.market-analysis-panel {
+    flex: 0 0 auto;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    box-shadow: none;
+}
+
+.market-analysis-panel .analysis-header {
+    min-height: 26px;
+    padding: 4px 12px;
+}
+
+.market-analysis-panel .analysis-header h3 {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+}
+
+.qs-strip {
+    height: 52px;
+    padding: 0 10px;
+}
+
+.qs-item {
+    min-width: max-content;
+    height: 100%;
+    padding: 0 12px;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 4px;
+}
+
+.qs-label {
+    font-size: 9px;
+    line-height: 1;
+}
+
+.qs-badge {
+    padding: 4px 10px;
+    font-size: 11px;
+}
+
+.qs-state {
+    padding: 4px 10px;
+    font-size: 11px;
+}
+
+.qs-divider {
+    height: 28px;
+}
+
+.qs-levels,
+.qs-liquidity {
+    gap: 10px;
+}
+
+.qs-level-price,
+.qs-liq-price,
+.qs-value {
+    font-size: 11px;
+}
+
+.qs-liq-price {
+    color: var(--ap-text-primary);
+}
+
+.qs-liq-arrow {
+    color: var(--ap-text-muted);
+}
+
+@media (max-width: 1400px) {
+    .qs-alert-ticker,
+    .qs-price {
+        display: none;
+    }
+}
+
+@media (max-width: 1200px) and (min-width: 1101px) {
+    .ap-panel {
+        width: 276px;
+        max-width: 276px;
+        min-width: 260px;
+    }
+
+    .qs-strip {
+        height: 50px;
+        padding-inline: 6px;
+    }
+
+    .qs-item {
+        padding-inline: 9px;
+    }
+}
+
+@media (max-width: 1100px) {
+    .container > header {
+        min-height: 58px;
+        padding: 8px 56px;
+        flex-wrap: nowrap;
+    }
+
+    .qs-strip {
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+}
+
+@media (max-width: 768px) {
+    .container > header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .header-left,
+    .header-controls {
+        width: 100%;
+    }
+}
+
+@media (max-width: 600px) {
+    .container > header {
+        display: grid;
+        grid-template-columns: 1fr;
+        padding: 8px 52px;
+        gap: 6px;
+    }
+
+    .nav-right-chart {
+        display: none !important;
+    }
+
+    .market-analysis-panel .analysis-header {
+        padding-inline: 9px;
+    }
+}
+
+@media (max-height: 760px) and (min-width: 1101px) {
+    .ap-speedometer {
+        max-width: 170px;
+    }
+
+    .ap-thesis {
+        padding-block: 8px;
+    }
+
+    .ap-session-context {
+        padding-block: 7px;
+    }
+
+    .ap-session-header {
+        margin-bottom: 6px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}

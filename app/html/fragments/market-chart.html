@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Trading Chart - TradingView Style</title>
+    <!-- Global Theme Variables (must be first) -->
+    <link rel="stylesheet" href="../../css/theme.css">
+    <link rel="stylesheet" href="../../css/dashboard/fragments/market-chart.css?v=3.1">
+    <link rel="stylesheet" href="../../css/dashboard/fragments/market-analysis-panel.css">
+    <link rel="stylesheet" href="../../css/dashboard/market-analysis.css">
+    <link rel="stylesheet" href="../../css/dashboard/fragments/indicators.css">
+    <link rel="stylesheet" href="../../css/dashboard/fragments/indicator-settings.css">
+    <link rel="stylesheet" href="../../css/chart/chart-context-menu.css">
+    <link rel="stylesheet" href="../../css/chart/chart-interval-bar.css?v=3.1">
+    <link rel="stylesheet" href="../../css/chart/drawing-toolbar.css?v=1.1">
+    <link rel="stylesheet" href="../../css/dashboard/ui-polish.css?v=1.3">
+    <!-- Chart narrator CSS loaded from the dashboard index -->
+    <!-- D3.js CDN -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="../../js/chart/zone-visibility.js" defer></script>
+    <script src="../../js/chart/chart-context-menu.js?v=2.1" defer></script>
+    <script src="../../js/chart/chart-interval-bar.js?v=2" defer></script>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Top Toolbar -->
+        <header>
+            <div class="header-left">
+                <div class="symbol-info">
+                    <!-- Symbol Dropdown integrated into symbol-info -->
+                    <div class="symbol-select-wrapper">
+                        <select id="symbolSelect" class="symbol-select">
+                            <option value="BTCUSDT">BTC/USDT</option>
+                            <option value="ETHUSDT">ETH/USDT</option>
+                            <option value="BNBUSDT">BNB/USDT</option>
+                            <option value="SOLUSDT">SOL/USDT</option>
+                            <option value="ADAUSDT">ADA/USDT</option>
+                            <option value="XAUUSD">XAU/USD</option>
+                            <option value="EURUSD">EUR/USD</option>
+                            <option value="GBPUSD">GBP/USD</option>
+                        </select>
+                    </div>
+                    <span id="currentPrice" class="current-price">--</span>
+                    <span id="priceChange" class="price-change">--</span>
+                </div>
+            </div>
+
+            <div class="header-controls">
+                <!-- Timeframe & Indicators Group (adjacent to header-left) -->
+                <div class="control-group control-group--primary">
+                    <!-- Favorite Timeframes Chips -->
+                    <div class="favorite-timeframes" id="favoriteTimeframes">
+                        <!-- Chips will be dynamically inserted here -->
+                    </div>
+
+                    <!-- Divider between favorites and buttons -->
+                    <div class="control-divider" id="favoritesDivider" style="display: none;"></div>
+
+                    <!-- Timeframe Split Button (matching Indicators style) -->
+                    <div class="timeframe-split-btn" id="timeframeDropdownWrapper">
+                        <!-- Hidden native select for form compatibility -->
+                        <select id="timeframeSelect" class="timeframe-select-hidden">
+                            <option value="1m">1m</option>
+                            <option value="5m">5m</option>
+                            <option value="15m">15m</option>
+                            <option value="1h" selected>1h</option>
+                            <option value="4h">4h</option>
+                            <option value="1d">1D</option>
+                        </select>
+
+                        <button class="timeframe-main-btn" id="timeframeDropdownTrigger">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="12 6 12 12 16 14" />
+                            </svg>
+                            <span class="timeframe-current" id="timeframeCurrent">1H</span>
+                        </button>
+                        <button class="timeframe-dropdown-btn" id="timeframeMenuToggle" title="Select Timeframe">
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M7 10l5 5 5-5z" />
+                            </svg>
+                        </button>
+
+                        <!-- Custom dropdown menu -->
+                        <div class="timeframe-dropdown-menu" id="timeframeDropdownMenu">
+                            <div class="timeframe-dropdown-item" data-value="1m">
+                                <span class="tf-label">1m</span>
+                                <button class="tf-star-btn" data-tf="1m" title="Toggle favorite">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polygon
+                                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="timeframe-dropdown-item" data-value="5m">
+                                <span class="tf-label">5m</span>
+                                <button class="tf-star-btn" data-tf="5m" title="Toggle favorite">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polygon
+                                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="timeframe-dropdown-item" data-value="15m">
+                                <span class="tf-label">15m</span>
+                                <button class="tf-star-btn" data-tf="15m" title="Toggle favorite">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polygon
+                                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="timeframe-dropdown-item active" data-value="1h">
+                                <span class="tf-label">1H</span>
+                                <button class="tf-star-btn" data-tf="1h" title="Toggle favorite">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polygon
+                                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="timeframe-dropdown-item" data-value="4h">
+                                <span class="tf-label">4H</span>
+                                <button class="tf-star-btn" data-tf="4h" title="Toggle favorite">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polygon
+                                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="timeframe-dropdown-item" data-value="1d">
+                                <span class="tf-label">1D</span>
+                                <button class="tf-star-btn" data-tf="1d" title="Toggle favorite">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polygon
+                                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Indicators Split Button -->
+                    <div class="indicators-split-btn">
+                        <button class="indicators-main-btn" id="indicatorsBtn" title="Indicators">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <line x1="12" y1="20" x2="12" y2="10" />
+                                <line x1="18" y1="20" x2="18" y2="4" />
+                                <line x1="6" y1="20" x2="6" y2="16" />
+                            </svg>
+                            <span>Indicators</span>
+                        </button>
+                        <button class="indicators-dropdown-btn" id="indicatorsFavDropdown" title="Favorite Indicators">
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M7 10l5 5 5-5z" />
+                            </svg>
+                        </button>
+                    </div>
+                    <!-- Indicators Favorites Dropdown Menu -->
+                    <div class="indicators-favorites-menu dropdown-menu" id="indicatorsFavoritesMenu">
+                        <div class="favorites-header">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                                <polygon
+                                    points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                            </svg>
+                            <span>Favorite Indicators</span>
+                        </div>
+                        <div class="favorites-list">
+                            <!-- Dynamic favorites list -->
+                        </div>
+                        <div class="favorites-footer">
+                            <button class="favorites-browse-btn">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <circle cx="11" cy="11" r="8" />
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                                </svg>
+                                Browse All Indicators
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Active Indicators Chips -->
+                    <div class="active-indicators-chips" id="activeIndicatorsChips" style="display: none;"></div>
+                </div>
+
+                <!-- Drawing toolbar UI; chart behavior is intentionally wired in a later pass. -->
+                <nav class="drawing-toolbar" id="drawingToolbar" aria-label="Drawing tools" data-ui-only="true">
+                    <div class="drawing-tool-menu">
+                        <button class="drawing-tool-trigger" id="drawingShapesToggle" type="button"
+                            aria-label="Shapes" aria-haspopup="menu" aria-controls="drawingShapesMenu"
+                            aria-expanded="false">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" aria-hidden="true">
+                                <path d="M4 19 19 4" />
+                                <rect x="4" y="5" width="7" height="7" rx="1" />
+                            </svg>
+                            <span class="drawing-trigger-label">Shapes</span>
+                            <svg class="drawing-trigger-chevron" viewBox="0 0 12 12" fill="none"
+                                stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                                <path d="m3 4.5 3 3 3-3" />
+                            </svg>
+                        </button>
+                        <div class="drawing-menu" id="drawingShapesMenu" role="menu" hidden>
+                            <span class="drawing-menu-label">Lines</span>
+                            <button class="drawing-menu-item" type="button" role="menuitemradio"
+                                aria-checked="false" data-drawing-tool="trend-line">
+                                <span class="drawing-item-icon">╱</span><span>Trend line</span>
+                            </button>
+                            <button class="drawing-menu-item" type="button" role="menuitemradio"
+                                aria-checked="false" data-drawing-tool="horizontal-line">
+                                <span class="drawing-item-icon">━</span><span>Horizontal line</span>
+                            </button>
+                            <button class="drawing-menu-item" type="button" role="menuitemradio"
+                                aria-checked="false" data-drawing-tool="vertical-line">
+                                <span class="drawing-item-icon">┃</span><span>Vertical line</span>
+                            </button>
+                            <button class="drawing-menu-item" type="button" role="menuitemradio"
+                                aria-checked="false" data-drawing-tool="ray">
+                                <span class="drawing-item-icon">↗</span><span>Ray</span>
+                            </button>
+                            <span class="drawing-menu-label">Shapes</span>
+                            <button class="drawing-menu-item" type="button" role="menuitemradio"
+                                aria-checked="false" data-drawing-tool="rectangle">
+                                <span class="drawing-item-icon">□</span><span>Rectangle</span>
+                            </button>
+                            <button class="drawing-menu-item" type="button" role="menuitemradio"
+                                aria-checked="false" data-drawing-tool="ellipse">
+                                <span class="drawing-item-icon">○</span><span>Ellipse</span>
+                            </button>
+                            <button class="drawing-menu-item" type="button" role="menuitemradio"
+                                aria-checked="false" data-drawing-tool="arrow">
+                                <span class="drawing-item-icon">→</span><span>Arrow</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="drawing-tool-menu">
+                        <button class="drawing-tool-trigger drawing-text-trigger" id="drawingTextToggle" type="button"
+                            aria-label="Text and annotation tools" aria-haspopup="menu" aria-controls="drawingTextMenu"
+                            aria-expanded="false">T</button>
+                        <div class="drawing-menu" id="drawingTextMenu" role="menu" hidden>
+                            <span class="drawing-menu-label">Text &amp; annotations</span>
+                            <button class="drawing-menu-item" type="button" role="menuitemradio"
+                                aria-checked="false" data-drawing-tool="text">
+                                <span class="drawing-item-icon">T</span><span>Text</span>
+                            </button>
+                            <button class="drawing-menu-item" type="button" role="menuitemradio"
+                                aria-checked="false" data-drawing-tool="comment">
+                                <span class="drawing-item-icon">•••</span><span>Comment</span>
+                            </button>
+                            <button class="drawing-menu-item" type="button" role="menuitemradio"
+                                aria-checked="false" data-drawing-tool="callout">
+                                <span class="drawing-item-icon">▰</span><span>Callout</span>
+                            </button>
+                            <button class="drawing-menu-item" type="button" role="menuitemradio"
+                                aria-checked="false" data-drawing-tool="price-note">
+                                <span class="drawing-item-icon">$</span><span>Price note</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="drawing-tool-menu">
+                        <button class="drawing-tool-trigger" id="drawingsManagerToggle" type="button"
+                            aria-label="Drawings manager" aria-haspopup="dialog" aria-controls="drawingsManagerMenu"
+                            aria-expanded="false">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M4 6h16M4 12h16M4 18h10" />
+                                <circle cx="18" cy="18" r="3" />
+                            </svg>
+                            <span class="drawing-count" id="drawingCount">0</span>
+                        </button>
+                        <div class="drawing-menu drawing-manager-menu" id="drawingsManagerMenu" role="dialog"
+                            aria-modal="false" aria-labelledby="drawingsManagerTitle" hidden>
+                            <div class="drawing-manager-header">
+                                <div class="drawing-manager-heading">
+                                    <strong class="drawing-manager-title" id="drawingsManagerTitle">Drawings</strong>
+                                    <span class="drawing-manager-subtitle">Manage chart annotations</span>
+                                </div>
+                                <span class="drawing-count" aria-hidden="true">0</span>
+                            </div>
+                            <div class="drawing-manager-actions">
+                                <button class="drawing-manager-action" id="drawingShowAll" type="button" disabled>Show all</button>
+                                <button class="drawing-manager-action" id="drawingHideAll" type="button" disabled>Hide all</button>
+                                <button class="drawing-manager-action danger" id="drawingDeleteAll" type="button" disabled>Delete all</button>
+                            </div>
+                            <div class="drawing-manager-empty" id="drawingsEmptyState">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <path d="M4 6h16M4 12h16M4 18h10" />
+                                    <path d="m17 16 3 3m0-3-3 3" />
+                                </svg>
+                                <strong>No drawings yet</strong>
+                                <span>Each drawing will appear here with visibility and individual delete controls.</span>
+                            </div>
+                            <ul class="drawing-manager-list" id="drawingsList" hidden></ul>
+                            <template id="drawingManagerItemTemplate">
+                                <li class="drawing-manager-row">
+                                    <button class="drawing-row-button visibility" type="button"
+                                        aria-label="Toggle drawing visibility">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            aria-hidden="true">
+                                            <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z" />
+                                            <circle cx="12" cy="12" r="2.5" />
+                                        </svg>
+                                    </button>
+                                    <span class="drawing-row-copy">
+                                        <strong class="drawing-row-name">Drawing</strong>
+                                        <span class="drawing-row-meta">Type · timeframe</span>
+                                    </span>
+                                    <button class="drawing-row-button delete" type="button" aria-label="Delete drawing">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                            <path d="M4 7h16M9 7V4h6v3m-8 0 1 13h8l1-13M10 11v5m4-5v5" />
+                                        </svg>
+                                    </button>
+                                </li>
+                            </template>
+                        </div>
+                    </div>
+                </nav>
+
+                <!-- Spacer to push chart utilities to the right -->
+                <div class="header-controls-spacer"></div>
+
+                <!-- Drawing Layers Toggle -->
+                <div class="control-group">
+                    <button class="icon-btn dropdown-toggle" id="layersToggle" type="button"
+                        aria-label="Chart layers" title="Chart layers">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <polygon points="12 2 2 7 12 12 22 7 12 2" />
+                            <polyline points="2 17 12 22 22 17" />
+                            <polyline points="2 12 12 17 22 12" />
+                        </svg>
+                    </button>
+                    <div class="dropdown-menu layers-menu" id="layersMenu">
+                        <!-- Structure Layers (Core) -->
+                        <div class="layers-section">
+                            <div class="layers-header">📊 Structure</div>
+                            <label class="layer-toggle">
+                                <input type="checkbox" id="layer-core-swings">
+                                <span class="layer-icon">◉</span>
+                                <span>Swing Points</span>
+                            </label>
+                            <label class="layer-toggle">
+                                <input type="checkbox" id="layer-core-structure">
+                                <span class="layer-icon">⚡</span>
+                                <span>BOS / CHoCH</span>
+                            </label>
+                            <label class="layer-toggle">
+                                <input type="checkbox" id="layer-core-levels">
+                                <span class="layer-icon">🛡️</span>
+                                <span>Protected Levels</span>
+                            </label>
+                            <label class="layer-toggle">
+                                <input type="checkbox" id="layer-core-zones" checked>
+                                <span class="layer-icon">▭</span>
+                                <span>Drawing Zones</span>
+                            </label>
+                        </div>
+
+                        <div class="layers-divider"></div>
+
+                        <!-- Levels & Imbalances (Core) -->
+                        <div class="layers-section">
+                            <div class="layers-header">🧱 Levels & Imbalances</div>
+                            <label class="layer-toggle">
+                                <input type="checkbox" id="layer-core-sr_zones">
+                                <span class="layer-icon">━</span>
+                                <span>S/R Zones</span>
+                            </label>
+                            <label class="layer-toggle">
+                                <input type="checkbox" id="layer-core-fvgs">
+                                <span class="layer-icon">▤</span>
+                                <span>Fair Value Gaps</span>
+                            </label>
+                            <label class="layer-toggle">
+                                <input type="checkbox" id="layer-core-liquidity">
+                                <span class="layer-icon">💰</span>
+                                <span>Liquidity Pools</span>
+                            </label>
+                            <label class="layer-toggle">
+                                <input type="checkbox" id="layer-core-moves">
+                                <span class="layer-icon">↗</span>
+                                <span>Market Moves</span>
+                            </label>
+                        </div>
+
+                        <div class="layers-divider"></div>
+
+
+                        <!-- Quick Actions -->
+                        <div class="layers-actions">
+                            <button class="layers-action" id="layersShowAll">Show All</button>
+                            <button class="layers-action" id="layersHideAll">Hide All</button>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Theme Toggle -->
+                <div class="control-group">
+                    <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle theme"
+                        title="Toggle theme">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z" />
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Profile and settings shortcut -->
+                <div class="nav-right-chart" style="margin-left: auto; display: flex; align-items: center; gap: 1rem;">
+                    <div class="profile-dropdown">
+                        <button class="profile-icon" id="profileToggleChart" type="button"
+                            aria-label="Open profile menu" aria-haspopup="menu" aria-expanded="false">
+                            <div class="profile-avatar">U</div>
+                        </button>
+                        <div class="dropdown-menu" id="profileDropdownChart" role="menu">
+                            <button type="button" class="dropdown-item" id="openSettingsFromChart" role="menuitem">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                    <circle cx="12" cy="7" r="4" />
+                                </svg>
+                                <span>Profile &amp; Settings</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Chart Area -->
+        <div class="chart-wrapper">
+            <!-- Left Panel (optional - for watchlist) -->
+            <aside class="left-panel" id="leftPanel" style="display: none;">
+                <div class="panel-header" style="color:inherit;border-bottom:0;">
+                    <h3>Watchlist</h3>
+                    <button class="close-panel">×</button>
+                </div>
+                <div class="watchlist">
+                    <!-- Watchlist items will be added here -->
+                </div>
+            </aside>
+            <!-- Main Chart Container -->
+            <div class="chart-container">
+                <!-- Chart Canvas -->
+                <div id="chartCanvas" class="chart-canvas">
+                    <svg id="candlestickChart"></svg>
+
+                    <!-- Reset Chart Button (Bottom Center) -->
+                    <button id="resetChartBtn" class="chart-reset-btn" title="Reset chart to default view">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C15.3019 3 18.1885 4.77814 19.7545 7.42909"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                            <path d="M16 7H20V3" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                    </button>
+
+                    <!-- Loading Overlay -->
+                    <div id="loadingOverlay" class="loading-overlay hidden"></div>
+
+                    <!-- Crosshair Info Box (visual only for now) -->
+                    <div id="crosshairInfo" class="crosshair-info">
+                        <div class="info-row">
+                            <span class="label">Time:</span>
+                            <span id="crosshairTime">--</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">O:</span>
+                            <span id="crosshairOpen">--</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">H:</span>
+                            <span id="crosshairHigh">--</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">L:</span>
+                            <span id="crosshairLow">--</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">C:</span>
+                            <span id="crosshairClose">--</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Vol:</span>
+                            <span id="crosshairVolume">--</span>
+                        </div>
+                        <div class="info-row change-row">
+                            <span class="label">Change:</span>
+                            <span id="crosshairChange">--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Volume Panel -->
+                <div id="volumePanel" class="indicator-panel" style="display: none;">
+                    <svg id="volumeChart"></svg>
+                </div>
+
+                <!-- Momentum Panel -->
+                <div id="momentumPanel" class="indicator-panel" style="display: none;">
+                    <svg id="momentumChart"></svg>
+                </div>
+
+                <!-- Volatility Panel -->
+                <div id="volatilityPanel" class="indicator-panel" style="display: none;">
+                    <svg id="volatilityChart"></svg>
+                </div>
+
+                <!-- Chart Interval Bar (Zoom Range & Timezone) -->
+                <div class="chart-interval-bar" id="chartIntervalBar">
+                    <!-- Interval Selector (Left) -->
+                    <div class="interval-selector" id="intervalSelector">
+                        <button class="interval-btn" data-interval="1D">1D</button>
+                        <button class="interval-btn" data-interval="5D">5D</button>
+                        <button class="interval-btn active" data-interval="1M">1M</button>
+                        <button class="interval-btn" data-interval="3M">3M</button>
+                        <button class="interval-btn" data-interval="6M">6M</button>
+                        <button class="interval-btn" data-interval="YTD">YTD</button>
+                        <button class="interval-btn" data-interval="1Y">1Y</button>
+                        <button class="interval-btn" data-interval="5Y">5Y</button>
+                        <button class="interval-btn" data-interval="All">All</button>
+                    </div>
+
+                    <!-- Timezone Selector (Right) -->
+                    <div class="timezone-selector">
+                        <div class="timezone-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="12 6 12 12 16 14" />
+                            </svg>
+                        </div>
+                        <div class="timezone-dropdown-wrapper">
+                            <select class="timezone-select" id="timezoneSelect">
+                                <option value="UTC" selected>(UTC+0) UTC</option>
+                                <option value="Europe/London">(UTC+0) London</option>
+                                <option value="Europe/Paris">(UTC+1) Paris</option>
+                                <option value="Europe/Berlin">(UTC+1) Berlin</option>
+                                <option value="Africa/Johannesburg">(UTC+2) Johannesburg</option>
+                                <option value="Europe/Moscow">(UTC+3) Moscow</option>
+                                <option value="Asia/Dubai">(UTC+4) Dubai</option>
+                                <option value="Asia/Kolkata">(UTC+5:30) Mumbai</option>
+                                <option value="Asia/Bangkok">(UTC+7) Bangkok</option>
+                                <option value="Asia/Hong_Kong">(UTC+8) Hong Kong</option>
+                                <option value="Asia/Singapore">(UTC+8) Singapore</option>
+                                <option value="Asia/Tokyo">(UTC+9) Tokyo</option>
+                                <option value="Australia/Sydney">(UTC+10) Sydney</option>
+                                <option value="Pacific/Auckland">(UTC+12) Auckland</option>
+                                <option value="Pacific/Honolulu">(UTC-10) Honolulu</option>
+                                <option value="America/Anchorage">(UTC-9) Anchorage</option>
+                                <option value="America/Los_Angeles">(UTC-8) Los Angeles</option>
+                                <option value="America/Denver">(UTC-7) Denver</option>
+                                <option value="America/Chicago">(UTC-6) Chicago</option>
+                                <option value="America/New_York">(UTC-5) New York</option>
+                                <option value="America/Sao_Paulo">(UTC-3) São Paulo</option>
+                            </select>
+                        </div>
+                        <div class="current-time-display" id="currentTimeDisplay">--:--</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Market Analysis Panel -->
+        <div id="marketAnalysisPanel" class="market-analysis-panel">
+            <div class="analysis-header" style="color:inherit;border:none;background:transparent;">
+                <h3>Quick Overview</h3>
+            </div>
+            <!-- Quick Strip - Enhanced Single Row Design with Labels -->
+            <div class="qs-strip" id="quickStrip">
+                <!-- Bias Badge -->
+                <div class="qs-item">
+                    <span class="qs-label">Bias</span>
+                    <span class="qs-badge neutral" id="qsBiasBadge">LOADING</span>
+                </div>
+                <div class="qs-divider"></div>
+
+                <!-- Structure State -->
+                <div class="qs-item">
+                    <span class="qs-label">State</span>
+                    <span class="qs-state neutral" id="qsState">—</span>
+                </div>
+                <div class="qs-divider"></div>
+
+                <!-- Price Zone -->
+                <div class="qs-item">
+                    <span class="qs-label">Zone</span>
+                    <span class="qs-value" id="qsZoneLabel">—</span>
+                </div>
+                <div class="qs-divider"></div>
+
+                <!-- Protected Levels -->
+                <div class="qs-item">
+                    <span class="qs-label">Key Levels</span>
+                    <div class="qs-levels">
+                        <div class="qs-level">
+                            <span class="qs-level-icon high">▲</span>
+                            <span class="qs-level-price high" id="qsProtectedHigh">--</span>
+                        </div>
+                        <div class="qs-level">
+                            <span class="qs-level-icon low">▼</span>
+                            <span class="qs-level-price low" id="qsProtectedLow">--</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="qs-divider"></div>
+
+                <!-- Liquidity Targets -->
+                <div class="qs-item">
+                    <span class="qs-label">Liquidity</span>
+                    <div class="qs-liquidity">
+                        <div class="qs-liq-target">
+                            <span class="qs-liq-arrow">↑</span>
+                            <span class="qs-liq-price" id="qsLiqAbove">--</span>
+                        </div>
+                        <div class="qs-liq-target">
+                            <span class="qs-liq-arrow">↓</span>
+                            <span class="qs-liq-price" id="qsLiqBelow">--</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="qs-divider"></div>
+
+                <!-- Invalidation -->
+                <div class="qs-item">
+                    <span class="qs-label">Invalidation</span>
+                    <span class="qs-value warning" id="qsInvalidation">--</span>
+                </div>
+
+                <!-- Alert Ticker -->
+                <div class="qs-alert-ticker" id="qsAlertTicker">
+                    <div class="qs-alert-track" id="qsAlertTrack">
+                        <!-- Alerts will be populated by JS -->
+                        <!-- Duplicated for seamless loop -->
+                    </div>
+                </div>
+
+                <!-- Current Price -->
+                <span class="qs-price" id="qsCurrentPrice">--</span>
+            </div>
+
+            <!-- Warnings Analysis View -->
+            <div class="analysis-content warnings-view" style="display: none;">
+                <div class="warnings-panel">
+                    <!-- Risk Summary Banner -->
+                    <div class="risk-summary" id="riskSummary">
+                        <span class="risk-icon">🟢</span>
+                        <span class="risk-text">LOW RISK: No active warnings. Market conditions favorable.</span>
+                    </div>
+
+                    <!-- Warning Category Filters -->
+                    <div class="warning-filters">
+                        <button class="filter-btn active" data-filter="all">
+                            <span class="filter-label">ALL</span>
+                            <span class="filter-count" id="filterAllCount">0</span>
+                        </button>
+                        <button class="filter-btn" data-filter="levels">
+                            <span class="filter-label">KEY LEVELS</span>
+                            <span class="filter-count" id="filterLevelsCount">0</span>
+                        </button>
+                        <button class="filter-btn" data-filter="structure">
+                            <span class="filter-label">STRUCTURE</span>
+                            <span class="filter-count" id="filterStructureCount">0</span>
+                        </button>
+                        <button class="filter-btn" data-filter="events">
+                            <span class="filter-label">EVENTS</span>
+                            <span class="filter-count" id="filterEventsCount">0</span>
+                        </button>
+                        <button class="filter-btn" data-filter="alignment">
+                            <span class="filter-label">ALIGNMENT</span>
+                            <span class="filter-count" id="filterAlignmentCount">0</span>
+                        </button>
+                    </div>
+
+                    <!-- Warning Cards Container -->
+                    <div class="warning-cards-container" id="warningCardsContainer">
+                        <!-- Sample Critical Warning Card -->
+                        <div class="warning-detail-card critical" id="warningCardTemplate" style="display: none;">
+                            <div class="card-severity">
+                                <span class="severity-badge critical">🔴 CRITICAL</span>
+                                <span class="card-category">STRUCTURE</span>
+                            </div>
+                            <div class="card-title">Bearish CHoCH in Uptrend</div>
+                            <div class="card-divider"></div>
+                            <div class="card-description">
+                                A bearish Change of Character occurred at $97,200. This indicates smart money may be
+                                distributing positions.
+                            </div>
+                            <div class="card-implication">
+                                <span class="impl-icon">💡</span>
+                                <span class="impl-label">IMPLICATION:</span>
+                                <span class="impl-text">Trend reversal could be starting. Exercise caution with long
+                                    positions.</span>
+                            </div>
+                            <div class="card-action">
+                                <span class="action-icon">🎯</span>
+                                <span class="action-label">ACTION:</span>
+                                <span class="action-text">Close/reduce long positions. Wait for bearish
+                                    confirmation.</span>
+                            </div>
+                            <div class="card-buttons">
+                                <button class="card-btn show-chart">Show on Chart</button>
+                                <button class="card-btn dismiss">Dismiss</button>
+                                <button class="card-btn set-alert">Set Alert</button>
+                            </div>
+                        </div>
+
+                        <!-- Empty State -->
+                        <div class="warnings-empty-state" id="warningsEmptyState">
+                            <span class="empty-icon">✅</span>
+                            <span class="empty-text">No active warnings</span>
+                            <span class="empty-subtext">Market conditions are favorable for trading</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Replay Controls (visual only for now) -->
+        <div id="replayControls" class="replay-controls" style="display: none;">
+            <button class="replay-btn" id="replayPlay">▶</button>
+            <button class="replay-btn" id="replayPause">⏸</button>
+            <button class="replay-btn" id="replayStop">⏹</button>
+            <input type="range" id="replaySlider" class="replay-slider" min="0" max="100" value="0">
+            <span id="replayProgress" class="replay-progress">0 / 0</span>
+            <select id="replaySpeed" class="replay-speed">
+                <option value="0.25">0.25x</option>
+                <option value="0.5">0.5x</option>
+                <option value="1" selected>1x</option>
+                <option value="2">2x</option>
+                <option value="4">4x</option>
+            </select>
+            <button class="replay-btn" id="exitReplay">Exit Replay</button>
+        </div>
+
+        <!-- Keyboard Shortcuts Help (visual only for now) -->
+        <div id="shortcutsModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Keyboard Shortcuts</h2>
+                    <button class="modal-close">&times;</button>
+                </div>
+                <div class="modal-body shortcuts-list">
+                    <div class="shortcut-item">
+                        <kbd>Esc</kbd>
+                        <span>Select Cursor Tool</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <kbd>L</kbd>
+                        <span>Trend Line Tool</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <kbd>H</kbd>
+                        <span>Horizontal Line Tool</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <kbd>V</kbd>
+                        <span>Vertical Line Tool</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <kbd>R</kbd>
+                        <span>Rectangle Tool</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <kbd>F</kbd>
+                        <span>Fibonacci Tool</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <kbd>+</kbd>
+                        <span>Zoom In</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <kbd>-</kbd>
+                        <span>Zoom Out</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <kbd>0</kbd>
+                        <span>Reset Zoom</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <kbd>C</kbd>
+                        <span>Toggle Crosshair</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <kbd>G</kbd>
+                        <span>Toggle Grid</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <kbd>?</kbd>
+                        <span>Show Shortcuts</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast Notifications (visual only for now) -->
+        <div id="toastContainer" class="toast-container"></div>
+
+        <!-- Scripts -->
+        <!-- Render modules intentionally removed. Renders handled server-side or disabled. -->
+        <!-- Legacy indicators-api.js removed - use engine APIs instead -->
+
+        <!-- Core Engine (raw structure visualization) -->
+        <link rel="stylesheet" href="/css/engines/core/core-engine.css?v=1.0">
+        <script src="/js/engines/core/core-engine-api.js?v=1.0"></script>
+        <script src="/js/engines/core/drawing-zones.js?v=1.0"></script>
+        <script src="/js/engines/core/core-engine.js?v=1.3"></script>
+
+        <!-- Market Narrator script loaded from the dashboard index, not here -->
+
+        <!-- Main chart script with new modular architecture (ES6 module) -->
+        <!-- Drawing Manager - centralized chart overlay management -->
+        <script src="/js/chart/drawing-manager.js"></script>
+        <script src="/js/chart/drawings/sr-zones.js"></script>
+        <script src="/js/chart/drawing-toolbar.js?v=1.0"></script>
+        <script src="/js/chart/profile-menu.js?v=1.2"></script>
+        <script type="module" src="/js/fragments/market-chart.js?v=1.2.5"></script>
+
+        <!-- Indicators Manager & Popup -->
+        <script src="../../js/indicators/indicator-manager.js"></script>
+        <script src="../../js/indicators/indicator-popup.js"></script>
+        <script src="../../js/indicators/indicator-settings.js"></script>
+
+        <!-- Indicator Calculation & Rendering Engine -->
+        <script src="../../js/indicators/indicator-calculators.js"></script>
+        <script src="../../js/indicators/indicator-renderer.js"></script>
+        <script src="../../js/indicators/indicator-engine.js"></script>
+    </div>
+
+    <!-- Indicators Modal (Outside container for proper overlay) -->
+    <div class="indicators-modal-overlay" id="indicatorsModalOverlay">
+        <div class="indicators-modal" id="indicatorsModal">
+            <div class="indicators-modal-header">
+                <div class="indicators-modal-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="20" x2="12" y2="10" />
+                        <line x1="18" y1="20" x2="18" y2="4" />
+                        <line x1="6" y1="20" x2="6" y2="16" />
+                    </svg>
+                    <span>Indicators</span>
+                </div>
+                <button class="indicators-modal-close" id="indicatorsModalClose">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </div>
+            <div class="indicators-search-box">
+                <div class="indicators-search-wrapper">
+                    <svg class="indicators-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8" />
+                        <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                    </svg>
+                    <input type="text" class="indicators-search-input" id="indicatorsSearch"
+                        placeholder="Search indicators...">
+                </div>
+            </div>
+            <div class="indicators-modal-body">
+                <div class="indicators-categories" id="indicatorsCategories">
+                    <!-- Categories rendered by JS -->
+                </div>
+                <div class="indicators-list-container">
+                    <div class="indicators-list-header">
+                        <span class="indicators-list-title">All Indicators</span>
+                        <span class="indicators-list-count">0 indicators</span>
+                    </div>
+                    <div class="indicators-grid" id="indicatorsGrid">
+                        <!-- Indicators rendered by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
