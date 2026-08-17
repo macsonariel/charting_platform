@@ -39,14 +39,22 @@ class ApplicationSmokeTests(unittest.IsolatedAsyncioTestCase):
                 ['https://app.example.com', 'https://admin.example.com'],
             )
 
-    def test_app_runner_configuration_checks_health_and_core(self):
-        config = Path('apprunner.yaml').read_text(encoding='utf-8')
+    def test_ecs_express_configuration_checks_health_and_core(self):
+        dockerfile = Path('Dockerfile').read_text(encoding='utf-8')
+        deployment = Path('.github/workflows/deploy-ecs-express.yml').read_text(encoding='utf-8')
         verifier = Path('scripts/verify_deployment.py').read_text(encoding='utf-8')
 
-        self.assertIn('runtime: python311', config)
-        self.assertIn('backend.main:app', config)
-        self.assertIn('port: 8080', config)
-        self.assertIn('APP_ENV', config)
+        self.assertFalse(Path('apprunner.yaml').exists())
+        self.assertIn('backend.main:app', dockerfile)
+        self.assertIn('EXPOSE 8080', dockerfile)
+        self.assertIn('USER app', dockerfile)
+        self.assertIn("vars.AWS_DEPLOYMENT_ENABLED == 'true'", deployment)
+        self.assertIn('id-token: write', deployment)
+        self.assertNotIn('AWS_ACCESS_KEY_ID', deployment)
+        self.assertNotIn('AWS_SECRET_ACCESS_KEY', deployment)
+        self.assertIn('amazon-ecs-deploy-express-service@v1', deployment)
+        self.assertIn('health-check-path: /api/health', deployment)
+        self.assertIn('ECS Express endpoint or custom-domain URL', verifier)
         self.assertIn('/api/health', verifier)
         self.assertIn('/api/core/summary?', verifier)
 

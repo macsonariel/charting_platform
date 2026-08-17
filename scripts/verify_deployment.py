@@ -28,7 +28,7 @@ def get_json(base_url: str, path: str, timeout: float) -> dict:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("base_url", help="App Runner or custom-domain URL")
+    parser.add_argument("base_url", help="ECS Express endpoint or custom-domain URL")
     parser.add_argument("--symbol", default="BTCUSDT")
     parser.add_argument("--timeframe", default="1h")
     parser.add_argument("--periods", type=int, default=300)
